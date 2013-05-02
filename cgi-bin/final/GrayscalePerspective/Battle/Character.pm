@@ -8,6 +8,7 @@
 package GrayscalePerspective::Character;
 
 use GrayscalePerspective::DAL;
+use GrayscalePerspective::Battle::Class;
 use GrayscalePerspective::Battle::StatCollection;
 
 sub new
@@ -55,20 +56,25 @@ sub load {
 
 		FROM Battle_Character BCH
 		WHERE BCH.Id = ?;", \@params));
+		
 	return $self;
 }
 
 sub loadFromHashRef {
 	my ( $self, $hr ) = @_;
 	
-	my %result = %{$hr};	
-	$self->{_name} = $result{Name};
-	$self->{_level} =  $result{Level};	
-	
-	$self->{_statcollection} = new GrayscalePerspective::StatCollection();
-	$statcollectionobject = $self->{_statcollection};
-	
-	$statcollectionobject->loadFromHashRef($hr);
+	if ( defined ( $hr ) and $hr != 0 ) {
+		my %result = %{$hr};
+		$self->{_name} = $result{Name};
+		$self->{_level} =  $result{Level};	
+		
+		$self->{_statcollection} = new GrayscalePerspective::StatCollection();
+		$statcollectionobject = $self->{_statcollection};
+		
+		$statcollectionobject->loadFromHashRef($hr);
+		
+		$self->{_class} = new GrayscalePerspective::Class($result{ClassId}, 1);
+	}
 }
 
 sub save {

@@ -78,6 +78,6 @@ print $statobj->getMAG()->getCurrentValue() . " / " . $statobj->getMAG()->getMax
 print $statobj->getMDEF()->getCurrentValue() . " / " . $statobj->getMDEF()->getMaximumValue() . "\n";
 print $statobj->getDEX()->getCurrentValue() . " / " . $statobj->getDEX()->getMaximumValue() . "\n";
 
-
-#print split(/,/, $hp);
+my $classobj = $object->getClass();
+print $classobj->getTitle();
 

@@ -29,7 +29,21 @@ sub new
 }
 
 sub load {
+	my ( $self ) = @_;
+	my @params = ($self->{_id});
 	
+	$self->loadFromHashRef(GrayscalePerspective::DAL::execute_single_row_hashref("SELECT * FROM Battle_Class WHERE Id = ?;", \@params));
+	return $self;
+}
+
+sub loadFromHashRef {
+	my ( $self, $hr ) = @_;
+	
+	if ( defined ( $hr ) and $hr != 0 ) {
+		my %classhash = %{$hr};
+		$self->{_title} = $classhash{Title};
+		$self->{_description} = $classhash{Description};
+	}
 }
 
 sub getId {
