@@ -79,5 +79,7 @@ print $statobj->getMDEF()->getCurrentValue() . " / " . $statobj->getMDEF()->getM
 print $statobj->getDEX()->getCurrentValue() . " / " . $statobj->getDEX()->getMaximumValue() . "\n";
 
 my $classobj = $object->getClass();
-print $classobj->getTitle();
+#print $classobj->getTitle();
+
+$object->LevelUp();
 

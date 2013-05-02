@@ -91,6 +91,16 @@ INSERT INTO `jgerma08_db`.`User_Profile` (UserId, FirstName, LastName)
 END$$
 DELIMITER ;
 
+-- Functions
+DROP FUNCTION User_GetCharacterId;
+
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` FUNCTION `User_GetCharacterId`(p_userid INT) RETURNS int(11)
+BEGIN	
+RETURN (SELECT CharacterId FROM UserCharacterMapping WHERE UserId = p_userid);
+END$$
+
 
 
 #Default Data

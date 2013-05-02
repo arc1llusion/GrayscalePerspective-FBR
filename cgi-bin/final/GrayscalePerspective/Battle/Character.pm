@@ -46,13 +46,13 @@ sub load {
 	# We need DBD::mysql version 4, and we're running 3. I know I really can't complain since this is a basic class, though...
 	$self->loadFromHashRef(GrayscalePerspective::DAL::execute_single_row_hashref("SELECT 
 		BCH.*, 
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(1, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(1, BCH.ClassId, BCH.Level)) AS CHAR(10)))) HP, 
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(2, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(2, BCH.ClassId, BCH.Level)) AS CHAR(10)))) MP,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)))) STR,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)))) DEF,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MAG,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MDEF,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10))))  DEX
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(1, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(1, BCH.ClassId, BCH.Level)) AS CHAR(10)))) HP, 
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(2, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(2, BCH.ClassId, BCH.Level)) AS CHAR(10)))) MP,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(3, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)))) STR,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(4, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)))) DEF,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(5, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MAG,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(6, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MDEF,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(7, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10))))  DEX
 
 		FROM Battle_Character BCH
 		WHERE BCH.Id = ?;", \@params));
@@ -88,13 +88,19 @@ sub getId {
 
 sub setClass {
     my ( $self, $class ) = @_;
-    $self->{_class} = $class if defined($class);
+    $self->{_class} = $class if defined($class);	
     return $self->{_class};
 }
 
 sub getClass {
     my( $self ) = @_;	
     return $self->{_class};
+}
+
+sub switchClassById {
+	my ( $self, $classid ) = @_;
+	
+ 
 }
 
 sub setName {
@@ -108,11 +114,19 @@ sub getName {
     return $self->{_name};
 }
 
-sub setLevel {
-    my ( $self, $level ) = @_;
-    $self->{_level} = $level if defined($level);
-    return $self->{_level};
+sub LevelUp {
+	my ( $self ) = @_;
+	if ( defined $self->{_id} ) {
+		my @params = ( $self->{_id} );
+		$result = GrayscalePerspective::DAL::execute_query("call Battle_Character_LevelUp(?);", \@params);
+	}
 }
+
+#sub setLevel {
+    #my ( $self, $level ) = @_;
+    #$self->{_level} = $level if defined($level);
+    #return $self->{_level};
+#}
 
 sub getLevel {
     my( $self ) = @_;	

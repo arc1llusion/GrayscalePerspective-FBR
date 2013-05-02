@@ -109,7 +109,7 @@ sub save {
 		my ( $userProfile ) = $self->{_userProfile};		
 		my @params = ( $self->{_username}, $self->{_email}, $self->{_password}, $self->{_salt}, $userProfile->getFirstName(), $userProfile->getLastName() );
 		
-		$result = GrayscalePerspective::DAL::execute_query("call User_Save( ?, ?, ?, ?, ?, ?)", \@params);		
+		my $result = GrayscalePerspective::DAL::execute_query("call User_Save( ?, ?, ?, ?, ?, ?)", \@params);		
 		$self->loadFromUsername(); #DBD doesn't allow output parameters... So using a procedure I still can't eliminate all db calls.
 	}
 }

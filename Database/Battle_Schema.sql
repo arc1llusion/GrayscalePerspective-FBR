@@ -137,29 +137,43 @@ ENGINE = InnoDB;
 
 -- Procedures
 DROP Procedure Battle_Character_Get;
+DROP Procedure Battle_Character_LevelUp;
 
-delimiter $$
+DELIMITER $$
 
 CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_Get`(p_characterid int)
 BEGIN
 
 	SELECT 
 		BCH.*, 
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(1, BCH.ClassId, BCH.Level) * 10) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(1, BCH.ClassId, BCH.Level) * 10) AS CHAR(10)))) HP, 
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(2, BCH.ClassId, BCH.Level) * 10) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(2, BCH.ClassId, BCH.Level) * 10) AS CHAR(10)))) MP,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)))) STR,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)))) DEF,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MAG,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MDEF,
-		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10))))  DEX
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(1, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(1, BCH.ClassId, BCH.Level)) AS CHAR(10)))) HP, 
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(2, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(2, BCH.ClassId, BCH.Level)) AS CHAR(10)))) MP,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(3, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)))) STR,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(4, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)))) DEF,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(5, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MAG,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(6, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MDEF,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(7, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10))))  DEX
 
 		FROM Battle_Character BCH
 		WHERE BCH.Id = p_characterid;
 
 END$$
 
+delimiter $$
 
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_LevelUp`(p_characterid INT)
+BEGIN
+	-- First, update level.
+	UPDATE Battle_Character SET Level = Level + 1 WHERE Id = p_characterid;
 
+	-- Next, update character stats to go up with the level up. Class stats are dynamic, but character stats need to go up with it.
+	UPDATE Battle_ObjectStatValue BOS
+	 JOIN Battle_Character BC ON BOS.ObjectId = BC.Id
+	 JOIN Battle_ClassProgression BCP ON BOS.StatId = BCP.StatId AND BC.ClassId = BCP.ClassId
+	SET BOS.Value= BOS.Value + BCP.Progression  
+	WHERE ObjectId = p_characterid and ObjectType = 6;
+
+END$$
 
 -- Functions 
 DROP Function Battle_GetCharacterStatValue;$$
