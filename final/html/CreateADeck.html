@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<title>Flashcards Battle Royale - Create a Flashcard Deck</title>
+		<script src="../js/jquery-1.9.1.min.js" type="text/javascript"></script>
+		<script src="../js/actions.js" type="text/javascript"></script>
+		<script src="../js/global.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				GetHTMLTemplate( {action: "createdecktmpl"}, $('#categories'), true);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="deck">
+			<fieldset>
+				<div id="categories"></div>
+				Deck Name: <input type="text" name="gs_deckname" id="gs_deckname" />
+				<input type="button" name="gs_createdeck_submit" onClick="CreateDeck()" value="Create Deck"/>
+			</fieldset>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>Flashcards Battle Royale</title>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+		<script src="js/actions.js" type="text/javascript"></script>
+		<script src="js/global.js" type="text/javascript"></script>
+		<script type="text/javascript"> 
+			$(document).ready(function() {
+				GetHTMLTemplate( {action: "header"}, $('#Main'), true, function() {
+					if(!IsLoggedIn()) {
+						$("#loggedin").hide();
+						$("#loginmodal").hide();
+						$("#registermodal").hide();
+						
+						$("#loginlink").on('click', function(e) {
+							e.preventDefault();
+							$("#loginmodal").show();
+							$("#registermodal").hide();
+							$("#result").text("");
+						});
+						
+						$("#registerlink").on('click', function(e) {
+							e.preventDefault();
+							$("#registermodal").show();
+							$("#loginmodal").hide();
+							$("#result").text("");
+						});
+					}
+					else {		
+						$("#guest").hide();	
+						
+						$("#logoutlink").on('click', function(e) {					
+							e.preventDefault();
+							LogOut();
+						});
+
+						GetDecksForLoggedInUser($('#result'));
+					}
+				});
+			});
+		
+
+		</script>
+	</head>
+	<body>
+		<div id="Main">
+		</div>
+
+		
+		<div id="result"></div>
+	</body>
+</html>
