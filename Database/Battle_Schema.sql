@@ -138,6 +138,7 @@ ENGINE = InnoDB;
 -- Procedures
 DROP Procedure Battle_Character_Get;
 DROP Procedure Battle_Character_LevelUp;
+DROP Procedure Battle_Character_New;
 
 DELIMITER $$
 
@@ -175,6 +176,30 @@ BEGIN
 
 END$$
 
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_New`(
+		p_classid INT,
+		p_charactername CHAR(45)
+	)
+BEGIN
+	-- First add the new character entry
+	DECLARE characterid INT;
+	INSERT INTO `jgerma08_db`.`Battle_Character` (`ClassId`, `Name`, `Level`) VALUES (p_classid, p_charactername, 1);
+	
+	SET characterid = (select LAST_INSERT_ID());
+
+
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (1, 6, characterid, (SELECT Battle_GetClassStatValue(1, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (2, 6, characterid, (SELECT Battle_GetClassStatValue(2, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (3, 6, characterid, (SELECT Battle_GetClassStatValue(3, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (4, 6, characterid, (SELECT Battle_GetClassStatValue(4, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (5, 6, characterid, (SELECT Battle_GetClassStatValue(5, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (6, 6, characterid, (SELECT Battle_GetClassStatValue(6, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (7, 6, characterid, (SELECT Battle_GetClassStatValue(7, p_classid, 1)));
+
+END$$
+
 -- Functions 
 DROP Function Battle_GetCharacterStatValue;$$
 DROP FUNCTION Battle_GetClassStatValue;$$
@@ -197,7 +222,7 @@ BEGIN
 	LIMIT 1;
 
 	#Level is 0 based, so we subtract 1.
-	SET statvalue = statvalue + ( (p_level-1) * (SELECT Progression FROM Battle_ClassProgression WHERE StatId = p_statid AND ClassId = p_objectid));
+	#SET statvalue = statvalue + ( (p_level-1) * (SELECT Progression FROM Battle_ClassProgression WHERE StatId = p_statid AND ClassId = p_objectid));
 
 	RETURN statvalue;
 END$$

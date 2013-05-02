@@ -43,7 +43,10 @@ sub execute_single_row_hashref {
 		@parameter_values = @{$_[1]};
 	}
 	
-	my $row = $dbh->selectrow_hashref($sql, undef, @parameter_values) or die "Failed with error: " . ($DBI::errstr || " No Rows Returned. ");
+	my $row = $dbh->selectrow_hashref($sql, undef, @parameter_values);
+	if( $DBI::errstr) {
+		die "Failed with error: " . ($DBI::errstr);
+	}
 	return $row;
 }
 
@@ -55,7 +58,10 @@ sub execute_table_arrayref {
 		@parameter_values = @{$_[1]};
 	}
 	
-	my $arrayref = $dbh->selectall_arrayref($sql, { Slice => {} }, @parameter_values) or die "Failed with error: " . ($DBI::errstr || " No Rows Returned. ");
+	my $arrayref = $dbh->selectall_arrayref($sql, { Slice => {} }, @parameter_values);
+	if($DBI::errstr) {
+		die "Failed with error: " . ($DBI::errstr);
+	}
 	return $arrayref;
 }
 
