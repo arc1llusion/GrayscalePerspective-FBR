@@ -65,6 +65,37 @@ ENGINE = InnoDB;
 
 -- Procedures
 delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `User_Save`(
+	IN p_username VARCHAR(45),
+	IN p_email VARCHAR(45),
+	IN p_password CHAR(64),
+	IN p_salt CHAR(14),
+	IN p_firstname CHAR(45),
+	IN p_lastname VARCHAR(45)
+)
+BEGIN
+
+-- Warm up Script: call User_Save('Jared3','email@email.com','{SSHA256}mThXp7e75I2MX4HAZuXrjpO7F9f1SwYEhhfEB2pb0IOlNBP1','HEX{d4a2d42b}', 'jared', 'germano'); 
+
+DECLARE l_userid INT;
+DECLARE io_characterid INT;
+
+INSERT INTO `jgerma08_db`.`User` (Username, Email, Password, Salt, JoinDate) 
+	VALUES (p_username, p_email, p_password, p_salt, (SELECT CURRENT_TIMESTAMP));
+
+SELECT User.Id INTO l_userid FROM User ORDER BY JoinDate DESC LIMIT 1;
+
+INSERT INTO `jgerma08_db`.`User_Profile` (UserId, FirstName, LastName)
+	VALUE (l_userid, p_firstname, p_lastname);
+
+call Battle_Character_New(1, p_username, io_characterid);
+
+INSERT INTO UserCharacterMapping VALUES(l_userid, io_characterid);
+
+END$$
+
+delimiter $$
 DROP PROCEDURE IF EXISTS `User_Save`$$
 CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `User_Save`(
 	IN p_username VARCHAR(45),

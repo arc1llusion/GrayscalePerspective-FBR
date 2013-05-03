@@ -200,6 +200,31 @@ BEGIN
 
 END$$
 
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_New`(
+		p_classid INT,
+		p_charactername CHAR(45),
+		INOUT p_characterid INT
+	)
+BEGIN
+	-- First add the new character entry
+	DECLARE characterid INT;
+	INSERT INTO `jgerma08_db`.`Battle_Character` (`ClassId`, `Name`, `Level`) VALUES (p_classid, p_charactername, 1);
+	
+	SET characterid = (select LAST_INSERT_ID());
+
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (1, 6, characterid, (SELECT Battle_GetClassStatValue(1, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (2, 6, characterid, (SELECT Battle_GetClassStatValue(2, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (3, 6, characterid, (SELECT Battle_GetClassStatValue(3, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (4, 6, characterid, (SELECT Battle_GetClassStatValue(4, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (5, 6, characterid, (SELECT Battle_GetClassStatValue(5, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (6, 6, characterid, (SELECT Battle_GetClassStatValue(6, p_classid, 1)));
+	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (7, 6, characterid, (SELECT Battle_GetClassStatValue(7, p_classid, 1)));
+
+	SET p_characterid = characterid;
+END$$
+
 -- Functions 
 DROP Function Battle_GetCharacterStatValue;$$
 DROP FUNCTION Battle_GetClassStatValue;$$
