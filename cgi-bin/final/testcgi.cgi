@@ -69,8 +69,21 @@ my $userobj = new GrayscalePerspective::User(1, 1);
 my $object = $userobj->getCharacter();
 #print $object->getName() . " " . $object->getLevel();
 
+
 my $statobj = $object->getStatCollection();
-my $hp = $statobj->getHP()->getCurrentValue();
+
+print $statobj->getHP()->getCurrentValue() . " / " . $statobj->getHP()->getMaximumValue() . "\n";
+print $statobj->getMP()->getCurrentValue() . " / " . $statobj->getMP()->getMaximumValue() . "\n";
+print $statobj->getSTR()->getCurrentValue() . " / " . $statobj->getSTR()->getMaximumValue() . "\n";
+print $statobj->getDEF()->getCurrentValue() . " / " . $statobj->getDEF()->getMaximumValue() . "\n";
+print $statobj->getMAG()->getCurrentValue() . " / " . $statobj->getMAG()->getMaximumValue() . "\n";
+print $statobj->getMDEF()->getCurrentValue() . " / " . $statobj->getMDEF()->getMaximumValue() . "\n";
+print $statobj->getDEX()->getCurrentValue() . " / " . $statobj->getDEX()->getMaximumValue() . "\n\n";
+
+$object->LevelUp();
+
+$statobj = $object->getStatCollection();
+
 print $statobj->getHP()->getCurrentValue() . " / " . $statobj->getHP()->getMaximumValue() . "\n";
 print $statobj->getMP()->getCurrentValue() . " / " . $statobj->getMP()->getMaximumValue() . "\n";
 print $statobj->getSTR()->getCurrentValue() . " / " . $statobj->getSTR()->getMaximumValue() . "\n";
@@ -82,5 +95,6 @@ print $statobj->getDEX()->getCurrentValue() . " / " . $statobj->getDEX()->getMax
 my $classobj = $object->getClass();
 #print $classobj->getTitle();
 
-$object->LevelUp();
+#$object->setName("Kabros");
+$object->save();
 

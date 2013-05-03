@@ -41,6 +41,7 @@ sub loadFromHashRef {
 	
 	if ( defined $hashref and ( ref ( $hashref ) eq "HASH" ) ) {
 		my %statcol = %{$hashref};
+		
 		$self->{_hp}   = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{HP} ) ) ) unless not defined $statcol{HP};
 		$self->{_mp}   = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MP} ) ) ) unless not defined $statcol{MP};
 		$self->{_str}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{STR} ) ) ) unless not defined $statcol{STR};
@@ -52,6 +53,24 @@ sub loadFromHashRef {
 	else {
 		print "Stat Collection hashref was invalid.";
 	}
+}
+
+sub saveCurrentValuesToHashRef {
+	my ( $self, $hashref ) = @_;
+	
+		if ( defined $hashref and ( ref ( $hashref ) eq "HASH" ) ) {
+			
+			$hashref->{HP} = $self->{_hp}->getCurrentValue();
+			$hashref->{MP} = $self->{_mp}->getCurrentValue();
+			$hashref->{STR} = $self->{_str}->getCurrentValue();
+			$hashref->{DEF} = $self->{_def}->getCurrentValue();
+			$hashref->{MAG} = $self->{_mag}->getCurrentValue();
+			$hashref->{MDEF} = $self->{_mdef}->getCurrentValue();
+			$hashref->{DEX} = $self->{_def}->getCurrentValue();
+			
+			return $hashref;
+		}
+	return $hashref;
 }
 
 sub getHP {

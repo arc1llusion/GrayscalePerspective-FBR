@@ -139,6 +139,7 @@ ENGINE = InnoDB;
 DROP Procedure Battle_Character_Get;
 DROP Procedure Battle_Character_LevelUp;
 DROP Procedure Battle_Character_New;
+DROP Procedure Battle_Character_Save;
 
 DELIMITER $$
 
@@ -199,6 +200,38 @@ BEGIN
 	INSERT INTO `jgerma08_db`.`Battle_ObjectStatValue` (`StatId`, `ObjectType`, `ObjectId`, `Value`) VALUES (7, 6, characterid, (SELECT Battle_GetClassStatValue(7, p_classid, 1)));
 
 	SET p_characterid = characterid;
+END$$
+
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_Save`(
+	p_characterid INT,
+	p_name CHAR(45),
+	p_hp INT,
+	p_mp INT,
+	p_str INT,
+	p_def INT,
+	p_mag INT,
+	p_mdef INT,
+	p_dex INT	
+)
+BEGIN
+	UPDATE Battle_Character SET Name = p_name WHERE Id = p_characterid;
+
+	UPDATE Battle_ObjectStatValue SET Value = p_hp 
+		WHERE StatId = 1 and ObjectType = 6 and ObjectId = p_characterid;
+	UPDATE Battle_ObjectStatValue SET Value = p_mp 
+		WHERE StatId = 2 and ObjectType = 6 and ObjectId = p_characterid;
+	UPDATE Battle_ObjectStatValue SET Value = p_str 
+		WHERE StatId = 3 and ObjectType = 6 and ObjectId = p_characterid;
+	UPDATE Battle_ObjectStatValue SET Value = p_def 
+		WHERE StatId = 4 and ObjectType = 6 and ObjectId = p_characterid;
+	UPDATE Battle_ObjectStatValue SET Value = p_mag 
+		WHERE StatId = 5 and ObjectType = 6 and ObjectId = p_characterid;
+	UPDATE Battle_ObjectStatValue SET Value = p_mdef 
+		WHERE StatId = 6 and ObjectType = 6 and ObjectId = p_characterid;
+	UPDATE Battle_ObjectStatValue SET Value = p_dex 
+		WHERE StatId = 7 and ObjectType = 6 and ObjectId = p_characterid;
 END$$
 
 -- Functions 

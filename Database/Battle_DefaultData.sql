@@ -18,22 +18,22 @@ INSERT INTO `jgerma08_db`.`Battle_Stat` (`Id`, `Name`, `Description`) VALUES (7,
 
 -- Class Progression Data
 
-INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 1, 3);
-INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 2, 2);
+INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 1, 30);
+INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 2, 20);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 3, 3);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 4, 2);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 5, 1);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 6, 1);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (1, 7, 2);
-INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 1, 1);
-INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 2, 3);
+INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 1, 10);
+INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 2, 30);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 3, 1);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 4, 2);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 5, 3);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 6, 2);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (2, 7, 2);
-INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 1, 2);
-INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 2, 1);
+INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 1, 20);
+INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 2, 10);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 3, 2);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 4, 3);
 INSERT INTO `jgerma08_db`.`Battle_ClassProgression` (`ClassId`, `StatId`, `Progression`) VALUES (3, 5, 1);

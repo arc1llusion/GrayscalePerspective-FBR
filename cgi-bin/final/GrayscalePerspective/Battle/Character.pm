@@ -78,7 +78,36 @@ sub loadFromHashRef {
 }
 
 sub save {
-
+	my ( $self ) = @_;
+	my %savehash;
+	
+	if ( defined $self->{_id} ) {
+		$savehash{Id} = $self->{_id};
+		$savehash{ClassId} = $self->{_class}->getId();
+		$savehash{Name} = $self->{_name};
+		$self->{_statcollection}->saveCurrentValuesToHashRef( \%savehash );
+		
+		#while ( my ( $key, $value) = each %savehash ) {
+			#print "$key and $value \n";
+		#}
+		
+		my @params = 
+		(
+			$savehash{Id},
+			$savehash{Name},
+			$savehash{HP},
+			$savehash{MP},
+			$savehash{STR},
+			$savehash{DEF},
+			$savehash{MAG},
+			$savehash{MDEF},
+			$savehash{DEX}
+		);
+		
+		#print join(',', @params);
+		
+		GrayscalePerspective::DAL::execute_query("call Battle_Character_Save(?, ?, ?, ?, ?, ?, ?, ?, ?);", \@params);
+	}
 }
 
 sub getId {
@@ -117,8 +146,11 @@ sub getName {
 sub LevelUp {
 	my ( $self ) = @_;
 	if ( defined $self->{_id} ) {
+		$self->save();
+	
 		my @params = ( $self->{_id} );
 		$result = GrayscalePerspective::DAL::execute_query("call Battle_Character_LevelUp(?);", \@params);
+		$self->load();
 	}
 }
 
