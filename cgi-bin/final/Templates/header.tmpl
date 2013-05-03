@@ -26,6 +26,10 @@
 					Email: <input type="text" name="gs_email" id="gs_reg_email" /><br />
 					Firstname: <input type="text" name="gs_firstname" id="gs_reg_firstname" /><br />
 					Lastname: <input type="text" name="gs_lastname" id="gs_reg_lastname" /><br />
+					Character Name: <input type="text" name="gs_charactername" id="gs_reg_charactername" /><br />
+					Class: <select id="gs_reg_classid"><TMPL_LOOP NAME="CLASS_LOOP">
+								<option value="<TMPL_VAR NAME=ID>"><TMPL_VAR NAME=TITLE></option>
+					</TMPL_LOOP></select><br /><br />
 					<input type="button" name="gs_validate_user" onClick="RegisterUser(true, $('#result'))" value="Register"/>
 				</fieldset>
 			</div>

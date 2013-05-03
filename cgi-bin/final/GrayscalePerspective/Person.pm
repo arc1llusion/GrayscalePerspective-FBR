@@ -95,7 +95,7 @@ sub loadFromHashRef {
 #
 # Returns no value.
 sub save {
-	my ( $self, $password ) = @_; #password is only used for new users.
+	my ( $self, $password, $charactername, $classid ) = @_; #password, character, and class are only used for new users.
 	
 	if ( defined $self->{_id} ) {
 		my @params = ( $self->{_username}, $self->{_email}, $self->{_id} );
@@ -106,10 +106,23 @@ sub save {
 	}
 	else {
 		$self->setPassword($password);		
-		my ( $userProfile ) = $self->{_userProfile};		
-		my @params = ( $self->{_username}, $self->{_email}, $self->{_password}, $self->{_salt}, $userProfile->getFirstName(), $userProfile->getLastName() );
+		my ( $userProfile ) = $self->{_userProfile};
 		
-		my $result = GrayscalePerspective::DAL::execute_query("call User_Save( ?, ?, ?, ?, ?, ?)", \@params);		
+		my ( $cname ) = $self->{_username};
+		if ( defined $charactername ) {
+			$cname = $charactername;
+		}
+		
+		my @params = (  $self->{_username}, 
+						$self->{_email}, 
+						$self->{_password}, 
+						$self->{_salt}, 
+						$userProfile->getFirstName(), 
+						$userProfile->getLastName(),
+						$classid,
+						$charactername || $self->{_username});
+		
+		my $result = GrayscalePerspective::DAL::execute_query("call User_Save( ?, ?, ?, ?, ?, ?, ?, ? )", \@params);		
 		$self->loadFromUsername(); #DBD doesn't allow output parameters... So using a procedure I still can't eliminate all db calls.
 	}
 }

@@ -14,6 +14,8 @@ use GrayscalePerspective::Flashcards::Category;
 use GrayscalePerspective::Flashcards::Deck;
 use GrayscalePerspective::Flashcards::Flashcard;
 use GrayscalePerspective::Flashcards::FlashcardService;
+
+use GrayscalePerspective::Battle::Service;
 GrayscalePerspective::DAL::db_connect();
 
 my $cgi = new CGI;
@@ -97,12 +99,14 @@ sub ValidateUser {
 }
 
 sub RegisterUser {
-	my ( $username, $password, $email, $firstname, $lastname );
+	my ( $username, $password, $email, $firstname, $lastname, $charactername, $classid );
 	$username = param('username');
 	$password = param('password');
 	$email = param('email');
 	$firstname = param('firstname');
 	$lastname = param('lastname');
+	$charactername = param('charactername');
+	$classid = param('classid');
 	
 	my $object = new GrayscalePerspective::User();
 	$object->setUsername($username);
@@ -113,7 +117,7 @@ sub RegisterUser {
 	$userProfile->setLastName($lastname);
 	
 	$object->setUserProfile($userProfile);
-	$object->save($password);
+	$object->save($password, $charactername, $classid);
 	
 	print $cgi->header;
 	print 1;
@@ -159,6 +163,19 @@ sub GetHeader {
 		my $user = _getLoggedInUser();
 		$template->param(USERNAME => $user->getUsername());
 	}
+	
+	my @classes = @{GrayscalePerspective::Battle::Service::getAllClasses()};
+	
+	my @classref = ();
+	foreach my $classobj (@classes) {
+		my %classhash;
+		$classhash{Id} = $classobj->getId();
+		$classhash{Title} = $classobj->getTitle();
+		
+		push(@classref, \%classhash);
+	}
+	
+	$template->param(CLASS_LOOP => \@classref);
 	
 	print $cgi->header;
 	print $template->output;	

@@ -50,6 +50,7 @@ sub getId {
 	my ( $self ) = @_;
 	return $self->{_id};
 }
+
 sub setTitle {
     my ( $self, $title ) = @_;
     $self->{_title} = $title if defined($title);

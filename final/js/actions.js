@@ -29,6 +29,8 @@ function RegisterUser(showLoader, result) {
 	var v_email = $("#gs_reg_email").val();
 	var v_firstname = $("#gs_reg_firstname").val();
 	var v_lastname = $("#gs_reg_lastname").val();
+	var v_charactername = $("#gs_reg_charactername").val();
+	var v_classid = $("#gs_reg_classid").val();
 	
 	var v_error = "";
 	
@@ -55,11 +57,13 @@ function RegisterUser(showLoader, result) {
 	$.post(actionUrl, 
 	{
 		action: "reguser",
-		username: $("#gs_reg_username").val(),
-		password: $("#gs_reg_password").val(),
-		email: $("#gs_reg_email").val(),
-		firstname: $("#gs_reg_firstname").val(),
-		lastname: $("#gs_reg_lastname").val(),
+		username: v_username,
+		password: v_password,
+		email: v_email,
+		firstname: v_firstname,
+		lastname: v_lastname,
+		charactername: v_charactername,
+		classid: v_classid
 	}, 
 	function(data, status) {
 		var resulttext = "Invalid username and password.";

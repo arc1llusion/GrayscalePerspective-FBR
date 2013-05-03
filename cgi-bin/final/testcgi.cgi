@@ -10,6 +10,7 @@ use GrayscalePerspective::Flashcards::Flashcard;
 use GrayscalePerspective::Flashcards::FlashcardService;
 
 use GrayscalePerspective::Battle::Character;
+use GrayscalePerspective::Battle::Service;
 db_connect();
 
 
