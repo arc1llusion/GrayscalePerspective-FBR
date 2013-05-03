@@ -15,7 +15,6 @@ sub new
 		_currentValue => shift
     };
 	
-
     bless $self, $class;
 	
 	if( not defined $self->{_currentValue} ) {
@@ -68,6 +67,8 @@ sub setMaximum {
 }
 
 sub _normalize {
+	my ( $self ) = @_;
+	
 	if($self->{_maxValue} < $self->{_currentValue}) {
 		$self->{_currentValue} = $self->{_maxValue};
 	}
