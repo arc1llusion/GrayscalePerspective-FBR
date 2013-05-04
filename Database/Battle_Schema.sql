@@ -122,24 +122,32 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Active` (
 ENGINE = InnoDB;
 
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Log` (
-  `Id` INT NOT NULL AUTO_INCREMENT,
+  `Id` INT NOT NULL AUTO_INCREMENT ,
   `BattleId` INT NOT NULL ,
+  `CharacterId` INT NOT NULL ,
   `ActionMessage` LONGTEXT NOT NULL ,
   `CharacterMessage` LONGTEXT NULL ,
   PRIMARY KEY (`Id`) ,
   INDEX `fk_Log_ActiveBattle_idx` (`BattleId` ASC) ,
+  INDEX `fk_Log_CharacterId_idx` (`CharacterId` ASC) ,
   CONSTRAINT `fk_Log_ActiveBattle`
     FOREIGN KEY (`BattleId` )
     REFERENCES `jgerma08_db`.`Battle_Active` (`Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Log_CharacterId`
+    FOREIGN KEY (`CharacterId` )
+    REFERENCES `jgerma08_db`.`Battle_Character` (`Id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- Procedures
-DROP Procedure Battle_Character_Get;
-DROP Procedure Battle_Character_LevelUp;
-DROP Procedure Battle_Character_New;
-DROP Procedure Battle_Character_Save;
+DROP Procedure IF EXISTS Battle_Character_Get;
+DROP Procedure IF EXISTS Battle_Character_LevelUp;
+DROP Procedure IF EXISTS Battle_Character_New;
+DROP Procedure IF EXISTS Battle_Character_Save;
+DROP Procedure IF EXISTS Battle_Initiate;
 
 DELIMITER $$
 
@@ -234,10 +242,35 @@ BEGIN
 		WHERE StatId = 7 and ObjectType = 6 and ObjectId = p_characterid;
 END$$
 
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Initiate`(
+	p_challenger INT,
+	p_challenged INT
+)
+BEGIN
+	DECLARE l_battleid INT;
+	DECLARE l_challengername CHAR(45);
+	DECLARE l_challengedname CHAR(45);
+
+	INSERT INTO Battle_Active(Challenger, Challenged, Status) 
+		VALUES(p_challenger, p_challenged, 2);
+
+	SET l_battleid = (select LAST_INSERT_ID());
+	SET l_challengername = (SELECT Name From Battle_Character WHERE Id = p_challenger);
+	SET l_challengedname = (SELECT Name From Battle_Character WHERE Id = p_challenged);
+
+	INSERT INTO Battle_Log(BattleId, CharacterId, ActionMessage, CharacterMessage)
+		VALUES(l_battleid, p_challenger, CONCAT("Battle initiated by ", l_challengername, " against ", l_challengedname), "");
+END$$
+
+DELIMITER ;
+
 -- Functions 
-DROP Function Battle_GetCharacterStatValue;$$
-DROP FUNCTION Battle_GetClassStatValue;$$
-DROP Function Battle_GetStatValue;$$
+DROP FUNCTION IF EXISTS Battle_GetCharacterStatValue;
+DROP FUNCTION IF EXISTS Battle_GetClassStatValue;
+DROP FUNCTION IF EXISTS Battle_GetStatValue;
+DROP FUNCTION IF EXISTS Battle_GetLastCharacterIdAction;
 
 delimiter $$
 
@@ -298,6 +331,24 @@ BEGIN
 	SET statvalue = statvalue + ( (p_level-1) * (SELECT Progression FROM Battle_ClassProgression WHERE StatId = p_statid AND ClassId = p_objectid));
 
 	RETURN statvalue;
+END$$
+
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` FUNCTION `Battle_GetLastCharacterIdAction`(
+	p_battleid INT
+) RETURNS int(11)
+BEGIN
+	DECLARE l_characterid_turn INT;
+
+	SELECT BC.Id INTO l_characterid_turn 
+		FROM Battle_Character BC
+		JOIN Battle_Log BL ON BC.Id = BL.CharacterId
+		WHERE BL.BattleId = 15
+		ORDER BY BC.Id DESC
+		LIMIT 1;
+		
+RETURN l_characterid_turn;
 END$$
 
 
