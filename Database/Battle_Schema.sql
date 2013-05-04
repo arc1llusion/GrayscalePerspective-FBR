@@ -345,7 +345,7 @@ BEGIN
 		FROM Battle_Character BC
 		JOIN Battle_Log BL ON BC.Id = BL.CharacterId
 		WHERE BL.BattleId = 15
-		ORDER BY BC.Id DESC
+		ORDER BY BL.Id DESC
 		LIMIT 1;
 		
 RETURN l_characterid_turn;
