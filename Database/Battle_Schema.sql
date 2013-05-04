@@ -1,18 +1,18 @@
 -- Battle Schema
 use jgerma08_db;
 
-DROP TABLE Battle_Log;
-DROP TABLE Battle_Active;
+DROP TABLE IF EXISTS Battle_Log;
+DROP TABLE IF EXISTS Battle_Active;
 
-DROP TABLE Battle_ClassProgression;
-DROP TABLE UserCharacterMapping;
+DROP TABLE IF EXISTS Battle_ClassProgression;
+DROP TABLE IF EXISTS UserCharacterMapping;
 
-DROP TABLE Battle_ObjectStatValue;
-DROP TABLE Battle_Stat;
-DROP TABLE Battle_ObjectType;
+DROP TABLE IF EXISTS Battle_ObjectStatValue;
+DROP TABLE IF EXISTS Battle_Stat;
+DROP TABLE IF EXISTS Battle_ObjectType;
 
-DROP TABLE Battle_Character;
-DROP TABLE Battle_Class;
+DROP TABLE IF EXISTS Battle_Character;
+DROP TABLE IF EXISTS Battle_Class;
 
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Class` (
   `Id` INT NOT NULL AUTO_INCREMENT ,
@@ -122,7 +122,7 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Active` (
 ENGINE = InnoDB;
 
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Log` (
-  `Id` INT NOT NULL ,
+  `Id` INT NOT NULL AUTO_INCREMENT,
   `BattleId` INT NOT NULL ,
   `ActionMessage` LONGTEXT NOT NULL ,
   `CharacterMessage` LONGTEXT NULL ,
