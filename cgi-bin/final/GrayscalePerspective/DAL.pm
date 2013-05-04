@@ -11,7 +11,7 @@ our @EXPORT = qw(db_connect execute_query execute_single_row_hash execute_table_
 
 use DBI;
 
-my ($server, $username, $password, $db, $dbh);
+my ($server, $username, $password, $db, $dbh, $dal_err);
 
 $server = "localhost";
 $username = "jgerma08";
@@ -33,6 +33,30 @@ sub execute_query {
 	$result->execute(@parameter_values) or print "Failed with error: " . $DBI::errstr;
 	
 	return $result;
+}
+
+sub execute_scalar {
+	my $sql = $_[0];
+	my @parameter_values = ();
+	
+	if($_[1]) {
+		@parameter_values = @{$_[1]};
+	}
+	
+	my $row = $dbh->selectrow_arrayref($sql, undef, @parameter_values);
+	
+	if( $DBI::errstr ) {
+		die "Failed with error: " . ($DBI::errstr);
+	}
+	
+	my $scalar_result = undef;
+	
+	if ( defined ( $row ) and ref ( $row ) eq 'ARRAY' ) {
+		my @arr = @{$row};
+		$scalar_result = $arr[0];
+	}
+	
+	return $scalar_result;
 }
 
 sub execute_single_row_hashref {
