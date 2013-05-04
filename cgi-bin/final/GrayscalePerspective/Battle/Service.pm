@@ -97,6 +97,18 @@ sub doEitherCharactersHaveActiveBattle {
 	return _checkActiveBattleHash($result);
 }
 
+# takeTurn()
+#
+# Initiates the turn for a particular character. This function checks the specified battle is currently active and valid. It also checks if it is actually
+# the specified "characters" turn, and if so, we do the damage, save the character stats and update the battle log. Finally, this function checks the battle
+# parameters and ends the battle if necessary.
+#
+# $_[0] = Battle Id - The id of the battle to initiate the turn.
+# $_[1] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[2] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
+# $_[4] = Message - The message sent by the attacker. Will be added to the battle log.
+#
+# Does not return any value.
 sub takeTurn {
 	my $battleid  = $_[0];
 	my $character = $_[1];
@@ -145,6 +157,12 @@ sub _checkActiveBattleHash {
 	return 0;
 }
 
+# _updateBattleStatus() - Updates the battle with the specified status.
+#
+# $_[0] = Battle Id - The id of the battle to update.
+# $_[1] = Status    - The status to update the battle to. It should be within the constraints of the specified values at the top of this file.
+#
+# Returns no value.
 sub _updateBattleStatus {
 	my $battleid = $_[0];
 	my $status   = $_[1];
@@ -153,6 +171,13 @@ sub _updateBattleStatus {
 	my $result = GrayscalePerspective::DAL::execute_query("UPDATE Battle_Active SET Status = ? WHERE Id = ?", \@params);
 }
 
+# _saveBattleLog() - Saves a record to the battle log table with the specified parameters.
+#
+# $_[0] = Battle Id         - The id of the battle to update.
+# $_[1] = characterid       - The id of the character activating the update. 
+# $_[2] = action message    - The system message based on earlier events. Typically an initiation message, damage message, or victory message.
+# $_[3] = character message - The message sent by the character during this turn.
+# Returns no value.
 sub _saveBattleLog {
 	my $battleid         = $_[0];
 	my $characterid      = $_[1];
@@ -163,6 +188,14 @@ sub _saveBattleLog {
 	my $result = GrayscalePerspective::DAL::execute_query("INSERT INTO Battle_Log(BattleId, CharacterId, ActionMessage, CharacterMessage) VALUES(?, ?, ?, ?)", \@params);
 }
 
+# _endBattle()
+#
+# Ends the battle. By this point, conditions to end the battle has already been met. Updates the battle log and battle status.
+#
+# $_[0] = Battle Id - The id of the battle to update.
+# $_[1] = Winner - The character object that won the battle.
+#
+# Returns no value.
 sub _endBattle {
 	my $battleid = $_[0];
 	my $winner = $_[1];
@@ -171,6 +204,16 @@ sub _endBattle {
 	_updateBattleStatus( $battleid, $Battle_Completed );
 }
 
+# _checkBattleParameters()
+#
+# Checks the battle parameters as needed, typically at the end of a turn. This function checks if the HP of any character in the battle has been depleted.
+# Based on this, it selects a winner with the depleted HP, and ends the battle.
+#
+# $_[0] = Battle Id - The id of the battle to update.
+# $_[1] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[2] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
+#
+# It wil return the $Battle_Completed status if the battle is over, otherwise it returns nothing.
 sub _checkBattleParameters {
 	my $battleid       = $_[0];
 	my $character      = $_[1];
@@ -190,10 +233,13 @@ sub _checkBattleParameters {
 	}
 }
 
+# _checkBattleStatus() - Checks and returns the current status of the specified battle from the Database.
+#
+# $_[0] = Battle Id - The id of the battle to update.
+#
+# Returns the status of the battle.
 sub _checkBattleStatus {
 	my $battleid       = $_[0];
-	my $character      = $_[1];
-	my $opponent       = $_[2];
 	
 	my @params = ( $battleid );
 	my $battle_in_progress = GrayscalePerspective::DAL::execute_scalar("SELECT Status FROM Battle_Active WHERE Id = ?", \@params);
