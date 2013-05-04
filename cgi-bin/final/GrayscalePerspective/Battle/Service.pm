@@ -10,13 +10,14 @@ package GrayscalePerspective::Battle::Service;
 # 3 - In Progress
 
 use GrayscalePerspective::DAL;
+use GrayscalePerspective::Battle::Character;
 use GrayscalePerspective::Battle::Class;
 
 use base Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEitherCharactersHaveActiveBattle);
 
-my ( $Battle_Completed, $Battle_Initiated, $Battle_InProgress) = (1, 2, 3);
+my ( $Battle_Completed, $Battle_Initiated, $Battle_InProgress, $Battle_Denied ) = (1, 2, 3, 4);
 
 # getAllClasses() - Gets all the Battle Classes in the system.
 #
@@ -97,23 +98,37 @@ sub doEitherCharactersHaveActiveBattle {
 }
 
 sub takeTurn {
-	my $battleid = $_[0];
-	my $characterid = $_[1];
+	my $battleid  = $_[0];
+	my $character = $_[1];
+	my $opponent  = $_[2];
+	my $message   = $_[3];
 	
 	#First check if the given character can execute a turn.
 	
-	my @params = ( $battleid );
-	my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)");
+	my $status = _checkBattleStatus( $battleid );
 	
-	if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $characterid ) {
-		#initiate turn
+	if( defined ( $status ) and $status != 1 ) {
+		my @params = ( $battleid );
+		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)");
+		
+		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
+			#initiate turn
+			my $damage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
+			$opponent->getStatCollection()->getHP()->damage($damage);
+			$opponent->save();
+			
+			_saveBattleLog($battleid, $character->getId(), $character->getName() . " did $damage points of damage to " . $opponent->getName(), $character->getName() . " says $message" );
+			
+			_checkBattleParameters($battleid, $character, $opponent);
+		}
+		else {
+			print "You already took your turn! No Cheating!";
+		}
 	}
 	else {
-		print "You already went! No Cheating!";
+		print "This battle is already completed: $battleid ";
 	}
 }
-
-
 
 # _checkActiveBattleHash() - A utility method to read back the scalar value for an active battle. Ideally DAL should have an execute scalar function.
 #
@@ -129,4 +144,60 @@ sub _checkActiveBattleHash {
 		}
 	}
 	return 0;
+}
+
+sub _updateBattleStatus {
+	my $battleid = $_[0];
+	my $status   = $_[1];
+	
+	my @params = ( $status, $battleid );
+	my $result = GrayscalePerspective::DAL::execute_query("UPDATE Battle_Active SET Status = ? WHERE Id = ?", \@params);
+}
+
+sub _saveBattleLog {
+	my $battleid         = $_[0];
+	my $characterid      = $_[1];
+	my $actionmessage    = $_[2];
+	my $charactermessage = $_[3];
+	
+	my @params = ( $battleid, $characterid, $actionmessage, $charactermessage );
+	my $result = GrayscalePerspective::DAL::execute_query("INSERT INTO Battle_Log(BattleId, CharacterId, ActionMessage, CharacterMessage) VALUES(?, ?, ?, ?)", \@params);
+}
+
+sub _endBattle {
+	my $battleid = $_[0];
+	my $winner = $_[1];
+	
+	_saveBattleLog( $battleid, $winner->getId(), "Battle ended, and the victory goes to " . $winner->getName() . "!", "");
+	_updateBattleStatus( $battleid, $Battle_Completed );
+}
+
+sub _checkBattleParameters {
+	my $battleid       = $_[0];
+	my $character      = $_[1];
+	my $opponent       = $_[2];
+	
+	my $winner = undef;
+	if ( $character->getStatCollection()->getHP()->getCurrentValue() <= 0 ) {
+		$winner = $opponent;
+	}
+	elsif ( $opponent->getStatCollection()->getHP()->getCurrentValue()  <= 0 ) {
+		$winner = $character;
+	}
+	
+	if( defined ( $winner ) ) {
+		_endBattle ( $battleid, $winner );
+		return $Battle_Completed;
+	}
+}
+
+sub _checkBattleStatus {
+	my $battleid       = $_[0];
+	my $character      = $_[1];
+	my $opponent       = $_[2];
+	
+	my @params = ( $battleid );
+	my $battle_in_progress = GrayscalePerspective::DAL::execute_scalar("SELECT Status FROM Battle_Active WHERE Id = ?", \@params);
+	
+	return $battle_in_progress;
 }

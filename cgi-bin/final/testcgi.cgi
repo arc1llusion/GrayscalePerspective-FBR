@@ -109,4 +109,14 @@ db_connect();
 #print GrayscalePerspective::Battle::Service::initiateBattle(1, 1);
 #print GrayscalePerspective::Battle::Service::initiateBattle(1, 2);
 
-GrayscalePerspective::Battle::Service::takeTurn( 15, 2 );
+my $charobj = new GrayscalePerspective::Character( 1, 1 );
+my $charobj2 = new GrayscalePerspective::Character( 2, 1 );
+
+GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
+GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
