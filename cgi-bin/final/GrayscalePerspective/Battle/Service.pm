@@ -109,8 +109,7 @@ sub takeTurn {
 	
 	if( defined ( $status ) and $status != 1 ) {
 		my @params = ( $battleid );
-		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)");
-		
+		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)", \@params);
 		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
 			#initiate turn
 			my $damage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
