@@ -127,9 +127,15 @@ sub getClass {
 }
 
 sub switchClassById {
-	my ( $self, $classid ) = @_;
-	
- 
+	my ( $self, $classid ) = @_; 
+}
+
+sub isHealthZero {
+	my ( $self ) = @_;
+	if ( $self->getStatCollection()->getHP()->getCurrentValue <= 0 ) {
+		return 1;
+	}
+	return 0;
 }
 
 sub setName {
@@ -153,12 +159,6 @@ sub LevelUp {
 		$self->load();
 	}
 }
-
-#sub setLevel {
-    #my ( $self, $level ) = @_;
-    #$self->{_level} = $level if defined($level);
-    #return $self->{_level};
-#}
 
 sub getLevel {
     my( $self ) = @_;	
