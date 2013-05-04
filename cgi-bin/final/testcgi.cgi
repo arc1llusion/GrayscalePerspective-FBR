@@ -106,5 +106,7 @@ db_connect();
 #print GrayscalePerspective::Battle::Service::doEitherCharactersHaveActiveBattle(4, 5);
 
 
-print GrayscalePerspective::Battle::Service::initiateBattle(1, 1);
-print GrayscalePerspective::Battle::Service::initiateBattle(1, 2);
+#print GrayscalePerspective::Battle::Service::initiateBattle(1, 1);
+#print GrayscalePerspective::Battle::Service::initiateBattle(1, 2);
+
+GrayscalePerspective::Battle::Service::takeTurn( 15, 2 );

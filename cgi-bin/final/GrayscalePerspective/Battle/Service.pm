@@ -96,6 +96,23 @@ sub doEitherCharactersHaveActiveBattle {
 	return _checkActiveBattleHash($result);
 }
 
+sub takeTurn {
+	my $battleid = $_[0];
+	my $characterid = $_[1];
+	
+	#First check if the given character can execute a turn.
+	
+	my @params = ( $battleid );
+	my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)");
+	
+	if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $characterid ) {
+		#initiate turn
+	}
+	else {
+		print "You already went! No Cheating!";
+	}
+}
+
 
 
 # _checkActiveBattleHash() - A utility method to read back the scalar value for an active battle. Ideally DAL should have an execute scalar function.
