@@ -24,7 +24,7 @@ ENGINE = InnoDB;
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Character` (
   `Id` INT NOT NULL AUTO_INCREMENT ,
   `ClassId` INT NULL ,
-  `Name` VARCHAR(45) NOT NULL ,
+  `Name` VARCHAR(45) NOT NULL UNIQUE,
   `Level` INT NOT NULL DEFAULT 1 ,
   PRIMARY KEY (`Id`) ,
   INDEX `Battle_Character_Class_Fk_idx` (`ClassId` ASC) ,
@@ -103,19 +103,19 @@ ENGINE = InnoDB;
 
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Active` (
   `Id` INT NOT NULL AUTO_INCREMENT ,
-  `FirstCharacterId` INT NOT NULL ,
-  `SecondCharacterId` INT NOT NULL ,
+  `Challenger` INT NOT NULL ,
+  `Challenged` INT NOT NULL ,
   `Status` INT NOT NULL DEFAULT 1 COMMENT '1 means active, 0 inactive.' ,
   PRIMARY KEY (`Id`) ,
-  INDEX `fk_ActiveBattle_Character_idx` (`FirstCharacterId` ASC) ,
-  INDEX `fk_ActiveBattle_CharacterTwo_idx` (`SecondCharacterId` ASC) ,
+  INDEX `fk_ActiveBattle_Character_idx` (`Challenger` ASC) ,
+  INDEX `fk_ActiveBattle_CharacterTwo_idx` (`Challenged` ASC) ,
   CONSTRAINT `fk_ActiveBattle_CharacterOne`
-    FOREIGN KEY (`FirstCharacterId` )
+    FOREIGN KEY (`Challenger` )
     REFERENCES `jgerma08_db`.`Battle_Character` (`Id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ActiveBattle_CharacterTwo`
-    FOREIGN KEY (`SecondCharacterId` )
+    FOREIGN KEY (`Challenged` )
     REFERENCES `jgerma08_db`.`Battle_Character` (`Id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
