@@ -44,7 +44,7 @@ sub getAllClasses {
 # $_[0] = The character that initiated the challenge.
 # $_[1] = The character that the challenger...challenged.
 #
-# Returns 1 if the initiation was successful.
+# Returns the battle id if the initiation was successful.
 sub initiateBattle {
 	my $challenger = $_[0];
 	my $challenged = $_[1];
@@ -57,9 +57,13 @@ sub initiateBattle {
 		return "You or your opponent are currently already enganged in combat.";
 	}
 	
-	my @params = ( $challenger, $challenged, $Battle_Initiated );
-	my $result = GrayscalePerspective::DAL::execute_query("INSERT INTO Battle_Active(Challenger, Challenged, Status) VALUES(?, ?, ?);", \@params);
-	return 1;
+	my @params = ( $challenger, $challenged );
+	my $result = GrayscalePerspective::DAL::execute_query("call Battle_Initiate(?, ?);", \@params);
+	
+	@params = ( $challenger, $challenged, $Battle_Completed );
+	my $battleid = GrayscalePerspective::DAL::execute_scalar("SELECT Id FROM Battle_Active WHERE (Challenger = ? and Challenged = ?) AND Status <> ?", \@params);
+	
+	return $battleid;
 }
 
 # doesCharacterHaveActiveBattle() - Checks to see if a character is already in battle. It checks the database if the character is in a battle with
