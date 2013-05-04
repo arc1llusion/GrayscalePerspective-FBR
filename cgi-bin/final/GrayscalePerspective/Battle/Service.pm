@@ -38,6 +38,13 @@ sub getAllClasses {
 	return \@classes;
 }
 
+# initiateBattle() - Initiates a battle between two characters. Checks certain application constraints such as challenging oneself and if either character
+# is already in battle.
+#
+# $_[0] = The character that initiated the challenge.
+# $_[1] = The character that the challenger...challenged.
+#
+# Returns 1 if the initiation was successful.
 sub initiateBattle {
 	my $challenger = $_[0];
 	my $challenged = $_[1];
@@ -55,6 +62,12 @@ sub initiateBattle {
 	return 1;
 }
 
+# doesCharacterHaveActiveBattle() - Checks to see if a character is already in battle. It checks the database if the character is in a battle with
+# status != $Battle_Completed, either challenger or challenged, if so then they are available for a new battle.
+#
+# $_[0] = The character to check if they are in combat.
+#
+# Returns 1 if the character is in combat, and 0 otherwise.
 sub doesCharacterHaveActiveBattle {
 	my $singlecharacter = $_[0];
 	
@@ -63,6 +76,13 @@ sub doesCharacterHaveActiveBattle {
 	return _checkActiveBattleHash($result);
 }
 
+# doesCharacterHaveActiveBattle() - Checks to see if a character is already in battle. It checks the database if the character is in a battle with
+# status != $Battle_Completed, either challenger or challenged, if so then they are available for a new battle.
+#
+# $_[0] = The character that initiated the challenge.
+# $_[1] = The character that the challenger...challenged.
+#
+# Returns 1 if the character is in combat, and 0 otherwise.
 sub doEitherCharactersHaveActiveBattle {
 	my $challenger = $_[0];
 	my $challenged = $_[1];
@@ -74,7 +94,11 @@ sub doEitherCharactersHaveActiveBattle {
 
 
 
-
+# _checkActiveBattleHash() - A utility method to read back the scalar value for an active battle. Ideally DAL should have an execute scalar function.
+#
+# $_[0] the result that comes back from the DAL
+#
+# Returns 1 if the hash is defined and contains a value for ActiveBattle, 0 otherwise.
 sub _checkActiveBattleHash {
 	my $result = $_[0];
 	if ( defined $result and (ref ( $result ) eq 'HASH' ) ) {
