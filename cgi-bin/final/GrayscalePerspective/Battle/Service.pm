@@ -15,7 +15,7 @@ use GrayscalePerspective::Battle::Class;
 
 use base Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEitherCharactersHaveActiveBattle);
+our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEitherCharactersHaveActiveBattle takeTurn);
 
 my ( $Battle_Completed, $Battle_Initiated, $Battle_InProgress, $Battle_Denied ) = (1, 2, 3, 4);
 
@@ -49,22 +49,34 @@ sub getAllClasses {
 sub initiateBattle {
 	my $challenger = $_[0];
 	my $challenged = $_[1];
+	my $battleid;
 	
 	if($challenger == $challenged) {
 		return "You cannot challenge yourself!"; 
 	}
 	
-	if ( doEitherCharactersHaveActiveBattle( $challenger, $challenged) == 1 ) {
-		return "You or your opponent are currently already enganged in combat.";
+	if ( doEitherCharactersHaveActiveBattle( $challenger->getId(), $challenged->getId()) == 1 ) {
+		#Check if they're battling each other. If so, resume that battle by returning the id, If not, then, no new battle!
+		$battleid = _areCharactersBattlingEachOther ( $challenger->getId(), $challenged->getId() );
+		if ( $battleid ) {
+			return $battleid;
+		}
+		else {
+			return "You or your opponent are currently already enganged in combat.";
+		}
 	}
 	
-	my @params = ( $challenger, $challenged );
-	my $result = GrayscalePerspective::DAL::execute_query("call Battle_Initiate(?, ?);", \@params);
+	if ( ( not $challenger->isHealthZero() ) and ( not $challenged->isHealthZero() ) ) {	
+		my @params = ( $challenger->getId(), $challenged->getId() );
+		my $result = GrayscalePerspective::DAL::execute_query("call Battle_Initiate(?, ?);", \@params);
+		
+		@params = ( $challenger->getId(), $challenged->getId(), $Battle_Completed );
+		$battleid = GrayscalePerspective::DAL::execute_scalar("SELECT Id FROM Battle_Active WHERE (Challenger = ? and Challenged = ?) AND Status <> ?", \@params);
+		
+		return $battleid;
+	}
 	
-	@params = ( $challenger, $challenged, $Battle_Completed );
-	my $battleid = GrayscalePerspective::DAL::execute_scalar("SELECT Id FROM Battle_Active WHERE (Challenger = ? and Challenged = ?) AND Status <> ?", \@params);
-	
-	return $battleid;
+	return undef;
 }
 
 # doesCharacterHaveActiveBattle() - Checks to see if a character is already in battle. It checks the database if the character is in a battle with
@@ -198,10 +210,32 @@ sub _saveBattleLog {
 # Returns no value.
 sub _endBattle {
 	my $battleid = $_[0];
-	my $winner = $_[1];
+	my $winner   = $_[1];
 	
 	_saveBattleLog( $battleid, $winner->getId(), "Battle ended, and the victory goes to " . $winner->getName() . "!", "");
 	_updateBattleStatus( $battleid, $Battle_Completed );
+}
+
+# _areCharactersBattlingEachOther() - Checks to see if the given character ids are battling each other in an active battle.
+#
+# $_[0] - The first id of a character to check
+# $_[1] - The second id of a character to check
+#
+# Returns the battle id if the two characters are in an active battle, false otherwise.
+sub _areCharactersBattlingEachOther {
+	my $characterid      = $_[0];
+	my $othercharacterid = $_[1];
+	
+	my @params = ($characterid, $othercharacterid, $othercharacterid, $characterid, $Battle_Completed);
+	
+	my $result = GrayscalePerspective::DAL::execute_scalar("SELECT Id FROM Battle_Active 
+															WHERE ( (Challenger = ? AND Challenged = ?) 
+															OR (Challenger = ? AND Challenged = ? ) ) 
+															AND Status <> ?;", \@params);
+	
+	$result = $result || 0; #if nothing was returned, return a false value
+	
+	return $result;
 }
 
 # _checkBattleParameters()
@@ -220,10 +254,10 @@ sub _checkBattleParameters {
 	my $opponent       = $_[2];
 	
 	my $winner = undef;
-	if ( $character->getStatCollection()->getHP()->getCurrentValue() <= 0 ) {
+	if ( $character->isHealthZero() ) {
 		$winner = $opponent;
 	}
-	elsif ( $opponent->getStatCollection()->getHP()->getCurrentValue()  <= 0 ) {
+	elsif ( $opponent->isHealthZero ) {
 		$winner = $character;
 	}
 	
