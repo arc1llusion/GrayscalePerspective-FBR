@@ -135,25 +135,19 @@ sub takeTurn {
 		my @params = ( $battleid );
 		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)", \@params);
 		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
-			#initiate turn
-			my $physicaldamage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
-			my $magicaldamage = $character->getStatCollection()->getMAG()->getCurrentValue() - $opponent->getStatCollection()->getMDEF()->getCurrentValue();
+			#initiate turn			
+			my $physicaldamage = _getPhysicalDamage( $character, $opponent );
+			my $magicaldamage = _getMagicalDamage( $character, $opponent );
+			my $criticalhit = _getCriticalHitModifier( $character );
 			
-			if($physicaldamage <= 0 ) {
-				$physicaldamage = 0;
-			}
-			
-			if($magicaldamage <= 0 ) {
-				$magicaldamage = 0;
-			}
-			
-			my $damage = $physicaldamage + $magicaldamage;
+			my $damage = ($physicaldamage + $magicaldamage) * $criticalhit;
 			
 			$opponent->getStatCollection()->getHP()->damage($damage);
 			$opponent->save();
 			
-			_saveBattleLog($battleid, $character->getId(), $character->getName() . " did $damage points of damage to " . $opponent->getName(), $character->getName() . " says $message" );
+			$actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit );
 			
+			_saveBattleLog($battleid, $character->getId(), $actionmessage, $character->getName() . " says $message" );			
 			_checkBattleParameters($battleid, $character, $opponent);
 		}
 		else {
@@ -351,4 +345,83 @@ sub _checkBattleStatus {
 	my $battle_in_progress = GrayscalePerspective::DAL::execute_scalar("SELECT Status FROM Battle_Active WHERE Id = ?", \@params);
 	
 	return $battle_in_progress;
+}
+
+# _getPhysicalDamage() - Gets the amount of physical damage done by the attacker.
+#
+# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
+#
+# Returns the damage amount based on physical stats
+sub _getPhysicalDamage {
+	my $character = $_[0];
+	my $opponent  = $_[1];
+
+	my $physicaldamage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
+	
+	if($physicaldamage <= 0 ) {
+		$physicaldamage = 0;
+	}
+	return $physicaldamage;
+}
+
+# _getMagicalDamage() - Gets the amount of magical damage done by the attacker.
+#
+# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
+#
+# Returns the damage amount based on magical stats
+sub _getMagicalDamage {
+	my $character = $_[0];
+	my $opponent  = $_[1];
+	
+	my $magicaldamage = $character->getStatCollection()->getMAG()->getCurrentValue() - $opponent->getStatCollection()->getMDEF()->getCurrentValue();
+	
+	if($magicaldamage <= 0 ) {
+		$magicaldamage = 0;
+	}
+	return $magicaldamage;
+}
+
+# _getCriticalHitModifier()
+# 
+# Gets critical hit modifier. It's based on the characters dexterity. Once the critical hit rate is received, we generate
+# a random number to check against it.
+#
+# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+#
+# Returns 2 if it's a critical hit, 1 otherwise. It's a modifier, so 2 doubles the damage.
+sub _getCriticalHitModifier {
+	my $character = $_[0];
+	my $chr       = $character->getCriticalHitRate();
+	
+	my $n = rand();
+	
+	if ( $n <= $chr ) {
+		return 2;
+	}
+	return 1;
+}
+
+# _getCriticalHitModifier() - Generates the action message for the battle log. Bases itself on the damage, characters, and whether or not it was a critical hit.
+#
+# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
+# $_[2] = Damage - The damage done by the character in this turn.
+# $_[3] = ch - The critical hit modifier. If it's 1, then there was no critical hit.
+#
+# Returns the joined message based on the given parameters.
+sub _generateActionMessage {
+	my $character = $_[0];
+	my $opponent  = $_[1];
+	my $damage    = $_[2];
+	my $ch        = $_[3];
+	my $message = "";
+	
+	if ( $ch != 1 ) {
+		$message = "Critical Hit! ";
+	}
+	$message = ( $message || "") . $character->getName() . " did $damage points of damage to " . $opponent->getName();
+
+	return $message;
 }

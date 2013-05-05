@@ -130,18 +130,6 @@ sub getClass {
     return $self->{_class};
 }
 
-sub switchClassById {
-	my ( $self, $classid ) = @_; 
-}
-
-sub isHealthZero {
-	my ( $self ) = @_;
-	if ( $self->getStatCollection()->getHP()->getCurrentValue <= 0 ) {
-		return 1;
-	}
-	return 0;
-}
-
 sub setName {
     my ( $self, $name ) = @_;
     $self->{_name} = $name if defined($name);
@@ -183,6 +171,24 @@ sub getLevel {
 sub getStatCollection {
 	my ( $self ) = @_;
 	return $self->{_statcollection};
+}
+
+sub switchClassById {
+	my ( $self, $classid ) = @_; 
+}
+
+sub isHealthZero {
+	my ( $self ) = @_;
+	if ( $self->getStatCollection()->getHP()->getCurrentValue() <= 0 ) {
+		return 1;
+	}
+	return 0;
+}
+
+sub getCriticalHitRate {
+	my ( $self ) = @_;
+	my $chr = ( $self->getStatCollection()->getDEX()->getCurrentValue() * 100 ) / 256;
+	return ( $chr / 100 );
 }
 
 1;
