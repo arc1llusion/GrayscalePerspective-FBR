@@ -1,10 +1,11 @@
 var actionUrl = "https://crux.baker.edu/~jgerma08/cgi-bin/final/actions.cgi";
+var homeUrl = "https://crux.baker.edu/~jgerma08/final/";
 
 function LogIn(showLoader, result) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);
 	}
-
+	
 	$.post(actionUrl, 
 	{
 		action: "login",
@@ -15,7 +16,7 @@ function LogIn(showLoader, result) {
 		var resulttext = "Invalid username and password.";
 		if(data == "1") {
 			resulttext = "You're logged in!";
-			document.location.reload(true);			
+			document.location.href = homeUrl;		
 		}
 			
 		$(result).text(resulttext);
@@ -79,7 +80,7 @@ function LogOut() {
 	{
 		action: "logout"
 	}, function(data, status) {		
-		document.location.reload(true);
+		document.location.href = homeUrl;
 	});
 }
 

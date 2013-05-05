@@ -102,3 +102,17 @@ function ValidateEmail(s) {
 	var re = new RegExp(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i); //Case insensitive
 	return s.match(re);
 }
+
+/***************************
+* Other                    *
+****************************/
+function ShowHideLoginLogoutLink() {
+	if(IsLoggedIn()) {
+		$("li#logout").show();
+		$("li#login").hide();
+		
+		$("li#logout > a").on("click", function() {
+			LogOut();
+		});
+	}
+}

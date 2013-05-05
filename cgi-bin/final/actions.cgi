@@ -38,7 +38,12 @@ my ( %actions );
 			 
 			 "header"           => \&GetHeader,
 			 "createdecktmpl"   => \&GetCreateDeckHtml,
-			 "decklisting"      => \&GetDeckListing);
+			 "decklisting"      => \&GetDeckListing,
+			 
+			 "gethome"          => \&GetHomeTemplate,
+			 "getlogin"         => \&GetLoginTemplate,
+			 "getdecklisting"   => \&GetDeckListingTemplate,
+			 "getbattle"        => \&GetBattleTemplate);
 
 $action_param = param('action');
 
@@ -164,18 +169,10 @@ sub GetHeader {
 		$template->param(USERNAME => $user->getUsername());
 	}
 	
-	my @classes = @{GrayscalePerspective::Battle::Service::getAllClasses()};
 	
-	my @classref = ();
-	foreach my $classobj (@classes) {
-		my %classhash;
-		$classhash{Id} = $classobj->getId();
-		$classhash{Title} = $classobj->getTitle();
-		
-		push(@classref, \%classhash);
-	}
+
 	
-	$template->param(CLASS_LOOP => \@classref);
+	#$template->param(CLASS_LOOP => \@classref);
 	
 	print $cgi->header;
 	print $template->output;	
@@ -215,6 +212,43 @@ sub GetDeckListing {
 	}
 	$template->param(DECK_LOOP => \@deckref);
 	print $template->output;	
+}
+
+sub GetHomeTemplate {
+	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
+	$template->param(HOME_CONTENT => 1);
+	
+	
+	print $cgi->header;
+	print $template->output;	
+}
+
+sub GetLoginTemplate {
+	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
+	$template->param(LOGIN_REGISTER_CONTENT => 1);
+	
+	$template->param(CLASS_LOOP => _getBattleClassArrayRef() );
+	
+	print $cgi->header;
+	print $template->output;	
+}
+
+sub GetDeckListingTemplate {
+	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
+	$template->param(DECK_LISTING_CONTENT => 1);
+	$template->param(LOGGED_IN => _isUserLoggedIn() );
+	
+	print $cgi->header;
+	print $template->output;	
+}
+
+sub GetBattleTemplate {
+	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
+	$template->param(BATTLE_CONTENT => 1);
+	$template->param(LOGGED_IN => _isUserLoggedIn() );
+	
+	print $cgi->header;
+	print $template->output;
 }
 
 ############################
@@ -264,4 +298,17 @@ sub _getLoggedInUser {
 sub _isUserLoggedIn {
 	my $session = _getSession();
 	return $session->param('loggedin');
+}
+
+sub _getBattleClassArrayRef {
+	my @classes = @{GrayscalePerspective::Battle::Service::getAllClasses()};
+	my @classref = ();
+	foreach my $classobj (@classes) {
+		my %classhash;
+		$classhash{Id} = $classobj->getId();
+		$classhash{Title} = $classobj->getTitle();
+		
+		push(@classref, \%classhash);
+	}
+	return \@classref;
 }

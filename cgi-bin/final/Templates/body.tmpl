@@ -1,0 +1,289 @@
+<TMPL_IF NAME="HOME_CONTENT">   
+   <div class="home clear-fix">
+        <div class="banner">
+            <img src="images/banner-1.png" alt="" />
+        </div>
+        <div class="clear-fix">
+            <div class="columns">
+                <h2>Lorem ipsum dolor sit amet</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis enim diam, ultrices non pharetra vitae, cursus ut purus. Etiam purus libero, hendrerit sed lobortis at, 
+                    fringilla sed lectus. Donec vehicula enim quis erat lacinia sodales. Morbi in elit et erat aliquam ultricies. Suspendisse placerat cursus tellus, sed euismod metus 
+                    pulvinar eleifend. Nunc sodales tincidunt neque non faucibus. Pellentesque ac ante lorem. Nam mauris tortor, dapibus sit amet rutrum sed, posuere sit amet lorem.</p>
+                <div class="button-row">
+                    <a class="button" href="#">more</a>
+                </div>
+            </div>
+            <div class="columns">
+                <h2>Lorem ipsum dolor sit amet</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis enim diam, ultrices non pharetra vitae, cursus ut purus. Etiam purus libero, hendrerit sed lobortis at, 
+                    fringilla sed lectus. Donec vehicula enim quis erat lacinia sodales. Morbi in elit et erat aliquam ultricies. Suspendisse placerat cursus tellus, sed euismod metus 
+                    pulvinar eleifend. Nunc sodales tincidunt neque non faucibus. Pellentesque ac ante lorem. Nam mauris tortor, dapibus sit amet rutrum sed, posuere sit amet lorem.</p>
+                <div class="button-row">
+                    <a class="button" href="#">more</a>
+                </div>
+            </div>
+            <div class="columns">
+                <h2>Lorem ipsum dolor sit amet</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis enim diam, ultrices non pharetra vitae, cursus ut purus. Etiam purus libero, hendrerit sed lobortis at, 
+                    fringilla sed lectus. Donec vehicula enim quis erat lacinia sodales. Morbi in elit et erat aliquam ultricies. Suspendisse placerat cursus tellus, sed euismod metus 
+                    pulvinar eleifend. Nunc sodales tincidunt neque non faucibus. Pellentesque ac ante lorem. Nam mauris tortor, dapibus sit amet rutrum sed, posuere sit amet lorem.</p>
+                <div class="button-row">
+                    <a class="button" href="#">more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</TMPL_IF>
+<TMPL_IF NAME="LOGIN_REGISTER_CONTENT">
+    <div class="login">
+        <div class="clear-fix">
+            <div class="left-column">
+                <h2>Login</h2>
+                <div class="form-row">
+                    <label>Username</label>
+                    <div class="form-value">
+                        <input type="text" id="gs_username" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Password</label>
+                    <div class="form-value">
+                        <input type="password" id="gs_password" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label></label>
+                    <div class="form-value">
+						<input type="button" id="gs_login" value="Login" />
+                    </div>
+                </div>
+            </div>
+            <div class="right-column">
+                <h2>Register</h2>
+                <div class="form-row">
+                    <label>First Name</label>
+                    <div class="form-value">
+                        <input type="text" id="gs_reg_firstname" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Last Name</label>
+                    <div class="form-value">
+                        <input type="text" id="gs_reg_lastname" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Email</label>
+                    <div class="form-value">
+                        <input type="text" id="gs_reg_email" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Username</label>
+                    <div class="form-value">
+                        <input type="text" id="gs_reg_username" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>Password</label>
+                    <div class="form-value">
+                        <input type="password" id="gs_reg_password" />
+                    </div>
+                </div>
+				<div class="form-row">
+					<label>Character Name</label>
+					<div class="form-value">
+                        <input type="text" id="gs_reg_charactername" />
+                    </div>
+				</div>
+				<div class="form-row">
+					<label>Character Class</label>
+					<div class="form-value">
+						<select id="gs_reg_classid"><TMPL_LOOP NAME="CLASS_LOOP">
+								<option value="<TMPL_VAR NAME=ID>"><TMPL_VAR NAME=TITLE></option>
+						</TMPL_LOOP></select><br /><br />
+                    </div>
+				</div>
+                <div class="form-row">
+                    <label></label>
+                    <div class="form-value">
+						<input type="button" id="gs_register" value="Register" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</TMPL_IF>
+<TMPL_IF NAME="DECK_LISTING_CONTENT">
+	<TMPL_IF NAME="LOGGED_IN">
+	    <div class="deck-list">
+        <h2>Deck List</h2>
+			<div class="clear-fix">
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+			</div>
+		</div>
+	<TMPL_ELSE>
+		<TMPL_INCLUDE NAME="invalid.tmpl">
+	</TMPL_IF>
+</TMPL_IF>
+<TMPL_IF NAME="BATTLE_CONTENT">
+	<TMPL_IF NAME="LOGGED_IN">
+		<div class="battle">
+			<h2>Battle</h2>
+			<div class="clear-fix">
+				<div class="left-column">
+					<div class="form-row">
+						<label>Image</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Username</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Character Class</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Health Bar</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>MP Bar</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Experience Bar</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+				</div>
+				<div class="middle-column">
+					<h3>User Control Panel</h3>
+					<div class="form-row">
+						<label>Attack Type:</label>
+						<div class="form-value">
+							<select id="ddlAttackType">
+								<option>Option 1</option>
+								<option>Option 2</option>
+								<option>Option 3</option>
+							</select>
+						</div>
+					</div>
+					<div class="button-row">
+						<input type="button" id="btnAttack" value="Attack" />
+					</div>
+					<h3>Conversation</h3>
+					<div class="conversations">
+						<div class="form-row">
+							<label>[Username]</label>
+							<div class="form-value">
+								[Message]
+							</div>
+						</div>
+						<div class="form-row">
+							<label>[Username]</label>
+							<div class="form-value">
+								[Message]
+							</div>
+						</div>
+						<div class="form-row">
+							<label>[Username]</label>
+							<div class="form-value">
+								[Message]
+							</div>
+						</div>
+						<div class="form-row">
+							<label>[Username]</label>
+							<div class="form-value">
+								[Message]
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="right-column">
+					<div class="form-row">
+						<label>Image</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Username</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Character Class</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Health Bar</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>MP Bar</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+					<div class="form-row">
+						<label>Experience Bar</label>
+						<div class="form-value">
+							[Value]
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<TMPL_ELSE>
+		<TMPL_INCLUDE NAME="invalid.tmpl">
+	</TMPL_IF>
+</TMPL_IF>

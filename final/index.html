@@ -1,52 +1,73 @@
-<html>
-	<head>
-		<title>Flashcards Battle Royale</title>
-		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-		<script src="js/actions.js" type="text/javascript"></script>
-		<script src="js/global.js" type="text/javascript"></script>
-		<script type="text/javascript"> 
-			$(document).ready(function() {
-				GetHTMLTemplate( {action: "header"}, $('#Main'), true, function() {
-					if(!IsLoggedIn()) {
-						$("#loggedin").hide();
-						$("#loginmodal").hide();
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+	<title>Flashcards Battle Royale</title>
+    <link href="styles/base.css" rel="stylesheet" media="all" type="text/css" />
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+	<script src="js/actions.js" type="text/javascript"></script>
+	<script src="js/global.js" type="text/javascript"></script>
+	<script type="text/javascript"> 
+		$(document).ready(function() {
+			GetHTMLTemplate( {action: "gethome"}, $('#body'), true, function() {
+			/*
+				if(!IsLoggedIn()) {
+					$("#loggedin").hide();
+					$("#loginmodal").hide();
+					$("#registermodal").hide();
+					
+					$("#loginlink").on('click', function(e) {
+						e.preventDefault();
+						$("#loginmodal").show();
 						$("#registermodal").hide();
-						
-						$("#loginlink").on('click', function(e) {
-							e.preventDefault();
-							$("#loginmodal").show();
-							$("#registermodal").hide();
-							$("#result").text("");
-						});
-						
-						$("#registerlink").on('click', function(e) {
-							e.preventDefault();
-							$("#registermodal").show();
-							$("#loginmodal").hide();
-							$("#result").text("");
-						});
-					}
-					else {		
-						$("#guest").hide();	
-						
-						$("#logoutlink").on('click', function(e) {					
-							e.preventDefault();
-							LogOut();
-						});
+						$("#result").text("");
+					});
+					
+					$("#registerlink").on('click', function(e) {
+						e.preventDefault();
+						$("#registermodal").show();
+						$("#loginmodal").hide();
+						$("#result").text("");
+					});
+				}
+				else {		
+					$("#guest").hide();	
+					
+					$("#logoutlink").on('click', function(e) {					
+						e.preventDefault();
+						LogOut();
+					});
 
-						GetDecksForLoggedInUser($('#result'));
-					}
-				});
+					GetDecksForLoggedInUser($('#result'));
+				}*/
 			});
-		
+			
+			ShowHideLoginLogoutLink();
+		});
+	
 
-		</script>
-	</head>
-	<body>
-		<div id="Main">
-		</div>
-
-		
-		<div id="result"></div>
-	</body>
+	</script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="wrapper">
+            <div class="header-wrapper">
+                <p>Call us: 1-800-123-4567</p>
+                <div class="header clear-fix">
+                    <h1><span>Flashcards</span><span>made fun</span></h1>
+                    <ul>
+                        <li><a href="html/Default.html" class="current">Home</a></li>
+                        <li><a href="html/DeckListing.html">Flashcards</a></li>
+                        <li><a href="html/Discussions.html">Discussion</a></li>
+                        <li><a href="html/Battle.html">Battle</a></li>
+                        <li id="login"><a href="html/Login.html">Login / Register</a></li>
+						<li id="logout" style="display:none"><a href="#">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+			<div id="body"></div>
+            <div class="footer clear-fix">
+                <p>&copy; 2013 All Rights Reserved</p>
+            </div>
+        </div>
+    </form>
+</body>
 </html>
