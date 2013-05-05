@@ -8,6 +8,7 @@ package GrayscalePerspective::Battle::Service;
 # 1 - Completed
 # 2 - Initiated
 # 3 - In Progress
+# 4 - Denied
 
 use GrayscalePerspective::DAL;
 use GrayscalePerspective::Battle::Character;
