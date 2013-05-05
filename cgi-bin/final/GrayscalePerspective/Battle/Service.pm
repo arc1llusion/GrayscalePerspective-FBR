@@ -16,7 +16,7 @@ use GrayscalePerspective::Battle::Class;
 
 use base Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEitherCharactersHaveActiveBattle takeTurn);
+our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEitherCharactersHaveActiveBattle takeTurn getOpponentCharacterObject getBattleLog);
 
 my ( $Battle_Completed, $Battle_Initiated, $Battle_InProgress, $Battle_Denied ) = (1, 2, 3, 4);
 
@@ -31,7 +31,7 @@ sub getAllClasses {
 	
 	my @classes = ();
 	
-	foreach $class (@classes_raw) {
+	foreach my $class (@classes_raw) {
 		my $temp = new GrayscalePerspective::Class($class->{Id}, 1);
 		
 		push(@classes, $temp);
@@ -89,7 +89,7 @@ sub initiateBattle {
 sub doesCharacterHaveActiveBattle {
 	my $singlecharacter = $_[0];
 	
-	my @params = ( $singlecharacter, $singlecharacter, $Battle_Compelted );
+	my @params = ( $singlecharacter, $singlecharacter, $Battle_Completed );
 	my $result = GrayscalePerspective::DAL::execute_single_row_hashref("SELECT 1 ActiveBattle FROM Battle_Active WHERE (Challenger = ? or Challenged = ?) AND Status <> ?", \@params);
 	return _checkActiveBattleHash($result);
 }
@@ -146,7 +146,7 @@ sub takeTurn {
 			$opponent->getStatCollection()->getHP()->damage($damage);
 			$opponent->save();
 			
-			$actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit );
+			my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit );
 			
 			_saveBattleLog($battleid, $character->getId(), $actionmessage, $character->getName() . " says $message" );			
 			_checkBattleParameters($battleid, $character, $opponent);
@@ -158,6 +158,51 @@ sub takeTurn {
 	else {
 		print "This battle is already completed: $battleid ";
 	}
+}
+
+sub getOpponentCharacterObject {
+	my $characterid = $_[0];
+	
+	my @params = ( $characterid );
+	my $opponentid = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetOpponent(?)", \@params);
+	
+	if( defined ( $opponentid ) ) {
+		my $opponentobject = new GrayscalePerspective::Character( $opponentid, 1 );
+		return $opponentobject;
+	}
+	
+	return 0;
+}
+
+sub getBattleLog {
+	my $battleid     = $_[0];
+	my $characterone = $_[1];
+	my $charactertwo = $_[2];
+	
+	my @params = ( $battleid );
+	my $result = GrayscalePerspective::DAL::execute_table_arrayref("SELECT * FROM Battle_Log WHERE BattleId = ? ORDER BY Id DESC", \@params);
+	
+	my @logs_raw = @{$result};
+	my @logs = ();
+	
+	foreach my $log (@logs_raw) {
+		my %loghash;
+		my $charactername;
+		
+		if( $characterone->getId() == $log->{CharacterId} ) {
+			$loghash{Name} = $characterone->getName();
+		}
+		else {
+			$loghash{Name} = $charactertwo->getName();
+		}
+		
+		$loghash{ActionMessage}    = $log->{ActionMessage};
+		$loghash{CharacterMessage} = $log->{CharacterMessage};
+		
+		push(@logs, \%loghash);
+	}
+	
+	return \@logs;
 }
 
 # _checkActiveBattleHash() - A utility method to read back the scalar value for an active battle. Ideally DAL should have an execute scalar function.

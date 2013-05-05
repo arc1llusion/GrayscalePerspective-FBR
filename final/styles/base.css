@@ -417,3 +417,11 @@ div.deck-list, div.flashcards, div.quiz, div.battle, div.invalid-content {
             float: none;
             width: 100%;
         }
+
+	div.challenge-box {
+		padding: 25px 0 0 0;
+	}
+	
+	p.action-message {
+		font-style: italic;
+	}

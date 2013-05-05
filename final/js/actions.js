@@ -119,6 +119,30 @@ function GetHTMLTemplate(data, output, showLoader, callback) {
 	});
 }
 
+function Challenge() {
+	var challengeCharacter = $("#gs_character_challenge").val();
+	
+	$.post(actionUrl, 
+	{
+		action: "challenge",
+		charchallenge: challengeCharacter
+	}, function(data, status) {		
+		if(typeof(callback) == 'function') {
+			callback();
+		}
+	});
+}
+
+function Attack(callback) {
+	$.post(actionUrl, 
+	{
+		action: "attack"
+	}, function(data, status) {		
+		if(typeof(callback) == 'function') {
+			callback();
+		}
+	});
+}
 
 function showLoadingImageInElement(element) {
 	$(element).html("<img src=\"https://crux.baker.edu/~jgerma08/final/images/ajax-loader.gif\" alt=\"loading\" />");

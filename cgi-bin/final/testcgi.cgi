@@ -111,19 +111,15 @@ db_connect();
 
 
 my $charobj = new GrayscalePerspective::Character( 1, 1 );
-my $charobj2 = new GrayscalePerspective::Character( 3, 1 );
+my $charobj2 = new GrayscalePerspective::Character( 2, 1 );
 my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($charobj, $charobj2);
 
 print $battleid;
 if ( defined ( $battleid ) ) {
-
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
-	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
+	my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid, $charobj, $charobj2 );
+	
+	foreach $log (@{$logs}) {
+		print %{$log};
+	}
 }
 

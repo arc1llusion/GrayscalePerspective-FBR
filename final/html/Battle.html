@@ -7,11 +7,30 @@
 	<script src="../js/global.js" type="text/javascript"></script>
 	<script type="text/javascript"> 
 		$(document).ready(function() {
-			GetHTMLTemplate( {action: "getbattle"}, $('#body'), true, function() {
-			});
+			loadBattle();
 			ShowHideLoginLogoutLink();
+			
 		});
-	
+		
+		function loadBattle() {
+			GetHTMLTemplate( {action: "getbattle"}, $('#body'), true, function() {
+				if( $("#battleid").length ) {
+					$("#btnAttack").on("click", function() {
+						Attack(loadBattle);				
+					});
+					
+					clearTimeout(loadBattle);
+					setTimeout(loadBattle, 60000);
+				}
+				else {
+					$("#gs_character_challenge_submit").on("click", function() {
+						Challenge();
+					});					
+				}
+			});
+		}
+		
+		
 
 	</script>
 </head>

@@ -15,7 +15,9 @@ use GrayscalePerspective::Flashcards::Deck;
 use GrayscalePerspective::Flashcards::Flashcard;
 use GrayscalePerspective::Flashcards::FlashcardService;
 
+
 use GrayscalePerspective::Battle::Service;
+use GrayscalePerspective::Battle::Character;
 GrayscalePerspective::DAL::db_connect();
 
 my $cgi = new CGI;
@@ -43,7 +45,10 @@ my ( %actions );
 			 "gethome"          => \&GetHomeTemplate,
 			 "getlogin"         => \&GetLoginTemplate,
 			 "getdecklisting"   => \&GetDeckListingTemplate,
-			 "getbattle"        => \&GetBattleTemplate);
+			 "getbattle"        => \&GetBattleTemplate,
+			 
+			 "attack"           => \&Attack,
+			 "challenge"        => \&IssueChallenge);
 
 $action_param = param('action');
 
@@ -248,7 +253,72 @@ sub GetBattleTemplate {
 	$template->param(LOGGED_IN => _isUserLoggedIn() );
 	
 	print $cgi->header;
+	
+	if ( _isUserLoggedIn() ) {
+		my $user = _getLoggedInUser();
+		$user->load();
+		
+		my $hasActiveBattle = GrayscalePerspective::Battle::Service::doesCharacterHaveActiveBattle( $user->getCharacter()->getId() );
+		$template->param(IN_BATTLE => $hasActiveBattle );
+		
+		if( $hasActiveBattle ) {		
+			my $character = $user->getCharacter();
+			my $opponent = GrayscalePerspective::Battle::Service::getOpponentCharacterObject( $character->getId() );
+			
+			_saveCharacterToTemplate( $template, $character, "CHARACTER");
+			_saveCharacterToTemplate( $template, $opponent, "OPPONENT");
+			
+			my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($character, $opponent);
+			$template->param(BATTLE_ID => $battleid);
+			
+			my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid, $character, $opponent );
+			
+			_saveSessionParam('battleid', $battleid);
+			_saveSessionParam('opponent', $opponent);
+			
+			$template->param(MESSAGE_LOOP => $logs);
+		}
+	}
+	
 	print $template->output;
+}
+
+sub IssueChallenge {
+	print $cgi->header;
+	my $charactertochallenge = param("charchallenge");
+	if ( _isUserLoggedIn() ) {
+		
+		if( defined ( $charactertochallenge ) and $charactertochallenge ne "") {
+			my $opponent = new GrayscalePerspective::Character();
+			$opponent->setName( $charactertochallenge );
+			$opponent->loadFromName();
+			
+			my $user = _getLoggedInUser();
+			$user->load();
+			
+			my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($user->getCharacter(), $opponent);
+
+			if( defined ( $battleid ) ) {
+				_saveSessionParam('battleid', $battleid);
+				_saveSessionParam('opponent', $opponent);
+			}
+		}
+	}
+}
+
+############################
+#      Battle Related      #
+############################
+
+sub Attack {
+	print $cgi->header;
+
+	my $battleid = _getSessionParam('battleid');
+	my $character = _getLoggedInUser()->getCharacter();
+	my $opponent = _getSessionParam('opponent');
+	my $message = "test";
+	
+	GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message);
 }
 
 ############################
@@ -288,6 +358,21 @@ sub _getSession {
 	return $session;
 }
 
+sub _saveSessionParam {
+	my $sparam_key = $_[0];
+	my $sparam_value = $_[1];
+
+	my $session = _getSession();
+	$session->param($sparam_key, $sparam_value);
+}
+
+sub _getSessionParam {
+	my $sparam_key = $_[0];
+	my $session = _getSession();
+	
+	return $session->param($sparam_key);
+}
+
 sub _getLoggedInUser {
 	my $sid = $cgi->cookie("CGISESSID") || undef;
 	my $session = new CGI::Session(undef, $sid, {Directory=>'/tmp'});
@@ -311,4 +396,17 @@ sub _getBattleClassArrayRef {
 		push(@classref, \%classhash);
 	}
 	return \@classref;
+}
+
+sub _saveCharacterToTemplate {
+	my $template     = $_[0];
+	my $character = $_[1];
+	my $prefix       = $_[2];
+	
+	$template->param($prefix . "_NAME" => $character->getName());
+	$template->param($prefix . "_CLASS_NAME" => $character->getClass()->getTitle());
+	$template->param($prefix . "_LEVEL" => $character->getLevel());
+	$template->param($prefix . "_HEALTH" => $character->getStatCollection()->getHP()->getCurrentValue());
+	$template->param($prefix . "_MP" => $character->getStatCollection()->getMP()->getCurrentValue());
+	$template->param($prefix . "_EXP" => $character->getEXP());
 }

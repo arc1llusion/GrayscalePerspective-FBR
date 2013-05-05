@@ -61,14 +61,37 @@ sub load {
 	return $self;
 }
 
+sub loadFromName {
+	my ( $self ) = @_;
+	my @params = ($self->{_name});
+	
+	# Due to our outdated EVERYTHING, I had to call this without a procedure. This has made me quite unhappy.
+	# We need DBD::mysql version 4, and we're running 3. I know I really can't complain since this is a basic class, though...
+	$self->loadFromHashRef(GrayscalePerspective::DAL::execute_single_row_hashref("SELECT 
+		BCH.*, 
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(1, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(1, BCH.ClassId, BCH.Level)) AS CHAR(10)))) HP, 
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(2, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(2, BCH.ClassId, BCH.Level)) AS CHAR(10)))) MP,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(3, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(3, BCH.ClassId, BCH.Level)) AS CHAR(10)))) STR,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(4, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(4, BCH.ClassId, BCH.Level)) AS CHAR(10)))) DEF,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(5, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(5, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MAG,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(6, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(6, BCH.ClassId, BCH.Level)) AS CHAR(10))))  MDEF,
+		( CONCAT(CAST( (SELECT Battle_GetCharacterStatValue(7, BCH.Id, BCH.Level)) AS CHAR(10)),',', CAST( (SELECT Battle_GetClassStatValue(7, BCH.ClassId, BCH.Level)) AS CHAR(10))))  DEX
+
+		FROM Battle_Character BCH
+		WHERE BCH.Name = ?;", \@params));
+		
+	return $self;
+}
+
 sub loadFromHashRef {
 	my ( $self, $hr ) = @_;
 	
 	if ( defined ( $hr ) and $hr != 0 ) {
 		my %result = %{$hr};
-		$self->{_name} = $result{Name};
+		$self->{_id}    = $result{Id};
+		$self->{_name}  = $result{Name};
 		$self->{_level} =  $result{Level};	
-		$self->{_exp} = $result{EXP};
+		$self->{_exp}   = $result{EXP};
 		
 		$self->{_statcollection} = new GrayscalePerspective::StatCollection();
 		$statcollectionobject = $self->{_statcollection};

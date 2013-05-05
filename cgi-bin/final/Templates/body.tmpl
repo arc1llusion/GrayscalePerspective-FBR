@@ -159,130 +159,155 @@
 </TMPL_IF>
 <TMPL_IF NAME="BATTLE_CONTENT">
 	<TMPL_IF NAME="LOGGED_IN">
-		<div class="battle">
-			<h2>Battle</h2>
-			<div class="clear-fix">
-				<div class="left-column">
-					<div class="form-row">
-						<label>Image</label>
-						<div class="form-value">
-							[Value]
-						</div>
-					</div>
-					<div class="form-row">
-						<label>Username</label>
-						<div class="form-value">
-							[Value]
-						</div>
-					</div>
-					<div class="form-row">
-						<label>Character Class</label>
-						<div class="form-value">
-							[Value]
-						</div>
-					</div>
-					<div class="form-row">
-						<label>Health Bar</label>
-						<div class="form-value">
-							[Value]
-						</div>
-					</div>
-					<div class="form-row">
-						<label>MP Bar</label>
-						<div class="form-value">
-							[Value]
-						</div>
-					</div>
-					<div class="form-row">
-						<label>Experience Bar</label>
-						<div class="form-value">
-							[Value]
-						</div>
-					</div>
-				</div>
-				<div class="middle-column">
-					<h3>User Control Panel</h3>
-					<div class="form-row">
-						<label>Attack Type:</label>
-						<div class="form-value">
-							<select id="ddlAttackType">
-								<option>Option 1</option>
-								<option>Option 2</option>
-								<option>Option 3</option>
-							</select>
-						</div>
-					</div>
-					<div class="button-row">
-						<input type="button" id="btnAttack" value="Attack" />
-					</div>
-					<h3>Conversation</h3>
-					<div class="conversations">
+		<TMPL_IF NAME="IN_BATTLE">
+			<div class="battle">
+				<input type="hidden" id="battleid" value="<TMPL_VAR NAME=BATTLE_ID>" />
+				<h2>Battle</h2>
+				<div class="clear-fix">
+					<div class="left-column">
 						<div class="form-row">
-							<label>[Username]</label>
+							<label>Image</label>
 							<div class="form-value">
-								[Message]
+								[Value]
 							</div>
 						</div>
 						<div class="form-row">
-							<label>[Username]</label>
+							<label>Name</label>
 							<div class="form-value">
-								[Message]
+								<TMPL_VAR NAME="CHARACTER_NAME">
 							</div>
 						</div>
 						<div class="form-row">
-							<label>[Username]</label>
+							<label>Character Class</label>
 							<div class="form-value">
-								[Message]
+								<TMPL_VAR NAME="CHARACTER_CLASS_NAME">
 							</div>
 						</div>
 						<div class="form-row">
-							<label>[Username]</label>
+							<label>Level</label>
 							<div class="form-value">
-								[Message]
+								<TMPL_VAR NAME="CHARACTER_LEVEL">
+							</div>
+						</div>
+						<div class="form-row">
+							<label>Health Bar</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="CHARACTER_HEALTH">
+							</div>
+						</div>
+						<div class="form-row">
+							<label>MP Bar</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="CHARACTER_MP">
+							</div>
+						</div>
+						<div class="form-row">
+							<label>Experience Bar</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="CHARACTER_EXP">
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="right-column">
-					<div class="form-row">
-						<label>Image</label>
-						<div class="form-value">
-							[Value]
+					<div class="middle-column">
+						<h3>User Control Panel</h3>
+						<div class="form-row">
+							<label>Attack Type:</label>
+							<div class="form-value">
+								<select id="ddlAttackType">
+									<option>Option 1</option>
+									<option>Option 2</option>
+									<option>Option 3</option>
+								</select>
+							</div>
+						</div>
+						<div class="button-row">
+							<input type="button" id="btnAttack" value="Attack" />
+						</div>
+						<h3>Conversation</h3>
+						<div class="conversations">
+							<TMPL_LOOP NAME="MESSAGE_LOOP">
+								<div class="form-row">
+									<label><TMPL_VAR NAME="NAME"></label>
+									<div class="form-value">
+										<p class="action-message"><TMPL_VAR NAME="ACTIONMESSAGE"></p>
+										<p class="character-message"><TMPL_VAR NAME="CHARACTERMESSAGE"></p>
+									</div>
+								</div>
+							</TMPL_LOOP>
 						</div>
 					</div>
-					<div class="form-row">
-						<label>Username</label>
-						<div class="form-value">
-							[Value]
+					<div class="right-column">
+						<div class="form-row">
+							<label>Image</label>
+							<div class="form-value">
+								[Value]
+							</div>
 						</div>
-					</div>
-					<div class="form-row">
-						<label>Character Class</label>
-						<div class="form-value">
-							[Value]
+						<div class="form-row">
+							<label>Name</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OPPONENT_NAME">
+							</div>
 						</div>
-					</div>
-					<div class="form-row">
-						<label>Health Bar</label>
-						<div class="form-value">
-							[Value]
+						<div class="form-row">
+							<label>Character Class</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OPPONENT_CLASS_NAME">
+							</div>
 						</div>
-					</div>
-					<div class="form-row">
-						<label>MP Bar</label>
-						<div class="form-value">
-							[Value]
+						<div class="form-row">
+							<label>Level</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OPPONENT_LEVEL">
+							</div>
 						</div>
-					</div>
-					<div class="form-row">
-						<label>Experience Bar</label>
-						<div class="form-value">
-							[Value]
+						<div class="form-row">
+							<label>Health Bar</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OPPONENT_HEALTH">
+							</div>
+						</div>
+						<div class="form-row">
+							<label>MP Bar</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OPPONENT_MP">
+							</div>
+						</div>
+						<div class="form-row">
+							<label>Experience Bar</label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OPPONENT_EXP">
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		<TMPL_ELSE>
+			<div class="battle">
+				<h2>Challenge</h2>
+				<div class="clear-fix">
+					<p>You're not currently engaged in a battle. Type in the Character name of the one you wish to challenge.</p>
+					<div class="challenge-box">
+						<div class="form-row">
+							<label>Character Name</label>
+							<div class="form-value">
+								<input type="text" id="gs_character_challenge" />
+							</div>
+						</div>
+						<div class="form-row">
+							<label></label>
+							<div class="form-value">
+								<input type="button" id="gs_character_challenge_submit" value="Challenge!" />
+							</div>
+						</div>
+						<div class="form-row">
+							<label></label>
+							<div class="form-value" id="gs_battle_result" >
+							</div>
+						</div>
+					</div>
+				</div>
+		</TMPL_IF>
 	<TMPL_ELSE>
 		<TMPL_INCLUDE NAME="invalid.tmpl">
 	</TMPL_IF>

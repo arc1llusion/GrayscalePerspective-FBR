@@ -260,6 +260,7 @@ DROP FUNCTION IF EXISTS Battle_GetCharacterStatValue;
 DROP FUNCTION IF EXISTS Battle_GetClassStatValue;
 DROP FUNCTION IF EXISTS Battle_GetStatValue;
 DROP FUNCTION IF EXISTS Battle_GetLastCharacterIdAction;
+DROP FUNCTION IF EXISTS Battle_GetOpponent;
 
 delimiter $$
 
@@ -338,6 +339,38 @@ BEGIN
 		LIMIT 1;
 		
 RETURN l_characterid_turn;
+END$$
+
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` FUNCTION `Battle_GetOpponent`(
+p_characterid INT
+) RETURNS int(11)
+BEGIN
+
+DECLARE l_opponentid INT;
+
+DROP TEMPORARY TABLE IF EXISTS MatchedBattles;
+
+CREATE TEMPORARY TABLE MatchedBattles (
+	BattleId INT,
+	Challenger INT,
+	Challenged INT
+);
+
+INSERT INTO MatchedBattles
+	SELECT Id, Challenger, Challenged FROM Battle_Active 
+	WHERE (Challenger = p_characterid or Challenged = p_characterid) AND Status <> 1;
+
+IF (SELECT 1 FROM MatchedBattles WHERE Challenger = p_characterid) THEN
+	SET l_opponentid = (SELECT Challenged FROM MatchedBattles LIMIT 1);
+ELSE 
+	SET l_opponentid = (SELECT Challenger FROM MatchedBattles LIMIT 1);	
+END IF;
+
+DROP TEMPORARY TABLE MatchedBattles;
+
+RETURN l_opponentid;
 END$$
 
 
