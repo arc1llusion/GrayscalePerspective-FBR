@@ -1,11 +1,14 @@
 use jgerma08_db;
 
+DROP TABLE IF EXISTS UserCharacterMapping;
+
 DROP TABLE IF EXISTS User_Profile;
 DROP TABLE IF EXISTS User;
 
 DROP TABLE IF EXISTS Flashcard;
 DROP TABLE IF EXISTS Deck;
 DROP TABLE IF EXISTS Category;
+
 
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`User` (
   `Id` INT NOT NULL AUTO_INCREMENT ,
@@ -60,6 +63,23 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Flashcard` (
     FOREIGN KEY (`DeckId` )
     REFERENCES `jgerma08_db`.`Deck` (`Id` )
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`UserCharacterMapping` (
+  `UserId` INT NOT NULL ,
+  `CharacterId` INT NOT NULL ,
+  INDEX `UserKey_idx` (`UserId` ASC) ,
+  INDEX `CharacterKey_idx` (`CharacterId` ASC) ,
+  CONSTRAINT `UserKey`
+    FOREIGN KEY (`UserId` )
+    REFERENCES `jgerma08_db`.`User` (`Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `CharacterKey`
+    FOREIGN KEY (`CharacterId` )
+    REFERENCES `jgerma08_db`.`Battle_Character` (`Id` )
+    ON DELETE RESTRICT
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

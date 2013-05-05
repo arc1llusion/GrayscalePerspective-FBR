@@ -5,7 +5,6 @@ DROP TABLE IF EXISTS Battle_Log;
 DROP TABLE IF EXISTS Battle_Active;
 
 DROP TABLE IF EXISTS Battle_ClassProgression;
-DROP TABLE IF EXISTS UserCharacterMapping;
 
 DROP TABLE IF EXISTS Battle_ObjectStatValue;
 DROP TABLE IF EXISTS Battle_Stat;
@@ -34,23 +33,6 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Character` (
     FOREIGN KEY (`ClassId` )
     REFERENCES `jgerma08_db`.`Battle_Class` (`Id` )
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`UserCharacterMapping` (
-  `UserId` INT NOT NULL ,
-  `CharacterId` INT NOT NULL ,
-  INDEX `UserKey_idx` (`UserId` ASC) ,
-  INDEX `CharacterKey_idx` (`CharacterId` ASC) ,
-  CONSTRAINT `UserKey`
-    FOREIGN KEY (`UserId` )
-    REFERENCES `jgerma08_db`.`User` (`Id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `CharacterKey`
-    FOREIGN KEY (`CharacterId` )
-    REFERENCES `jgerma08_db`.`Battle_Character` (`Id` )
-    ON DELETE RESTRICT
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
