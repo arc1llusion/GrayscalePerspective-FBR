@@ -283,6 +283,21 @@ sub GetBattleTemplate {
 	print $template->output;
 }
 
+############################
+#      Battle Related      #
+############################
+
+sub Attack {
+	print $cgi->header;	
+
+	my $battleid = _getSessionParam('battleid');
+	my $character = _getLoggedInUser()->getCharacter();
+	my $opponent = _getSessionParam('opponent');
+	my $message = param('message');
+	
+	GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message);
+}
+
 sub IssueChallenge {
 	print $cgi->header;
 	my $charactertochallenge = param("charchallenge");
@@ -304,21 +319,6 @@ sub IssueChallenge {
 			}
 		}
 	}
-}
-
-############################
-#      Battle Related      #
-############################
-
-sub Attack {
-	print $cgi->header;
-
-	my $battleid = _getSessionParam('battleid');
-	my $character = _getLoggedInUser()->getCharacter();
-	my $opponent = _getSessionParam('opponent');
-	my $message = "test";
-	
-	GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message);
 }
 
 ############################

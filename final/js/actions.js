@@ -120,12 +120,12 @@ function GetHTMLTemplate(data, output, showLoader, callback) {
 }
 
 function Challenge() {
-	var challengeCharacter = $("#gs_character_challenge").val();
+	var v_challengeCharacter = $("#gs_character_challenge").val();
 	
 	$.post(actionUrl, 
 	{
 		action: "challenge",
-		charchallenge: challengeCharacter
+		charchallenge: v_challengeCharacter
 	}, function(data, status) {		
 		if(typeof(callback) == 'function') {
 			callback();
@@ -134,9 +134,12 @@ function Challenge() {
 }
 
 function Attack(callback) {
+	var v_message = $("#gs_char_message").val();
+
 	$.post(actionUrl, 
 	{
-		action: "attack"
+		action: "attack",
+		message: v_message
 	}, function(data, status) {		
 		if(typeof(callback) == 'function') {
 			callback();
