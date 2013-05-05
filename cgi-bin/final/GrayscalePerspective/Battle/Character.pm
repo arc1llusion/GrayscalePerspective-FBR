@@ -19,6 +19,7 @@ sub new
 		_class       => undef,
 		_name        => undef,
 		_level       => undef,
+		_exp         => undef,
 		
 		#stats flattened into the object. At the data level it's well designed. Here though we don't need that kind of normalized design.
 		_statcollection          => undef
@@ -67,6 +68,7 @@ sub loadFromHashRef {
 		my %result = %{$hr};
 		$self->{_name} = $result{Name};
 		$self->{_level} =  $result{Level};	
+		$self->{_exp} = $result{EXP};
 		
 		$self->{_statcollection} = new GrayscalePerspective::StatCollection();
 		$statcollectionobject = $self->{_statcollection};
@@ -85,6 +87,7 @@ sub save {
 		$savehash{Id} = $self->{_id};
 		$savehash{ClassId} = $self->{_class}->getId();
 		$savehash{Name} = $self->{_name};
+		$savehash{EXP} = $self->{_exp};
 		$self->{_statcollection}->saveCurrentValuesToHashRef( \%savehash );
 		
 		#while ( my ( $key, $value) = each %savehash ) {
@@ -95,6 +98,7 @@ sub save {
 		(
 			$savehash{Id},
 			$savehash{Name},
+			$savehash{EXP},
 			$savehash{HP},
 			$savehash{MP},
 			$savehash{STR},
@@ -106,7 +110,7 @@ sub save {
 		
 		#print join(',', @params);
 		
-		GrayscalePerspective::DAL::execute_query("call Battle_Character_Save(?, ?, ?, ?, ?, ?, ?, ?, ?);", \@params);
+		GrayscalePerspective::DAL::execute_query("call Battle_Character_Save(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", \@params);
 	}
 }
 
@@ -147,6 +151,17 @@ sub setName {
 sub getName {
     my( $self ) = @_;	
     return $self->{_name};
+}
+
+sub setEXP {
+    my ( $self, $exp ) = @_;
+    $self->{_exp} = $exp if defined($exp);
+    return $self->{_exp};
+}
+
+sub getEXP {
+    my( $self ) = @_;	
+    return $self->{_exp};
 }
 
 sub LevelUp {

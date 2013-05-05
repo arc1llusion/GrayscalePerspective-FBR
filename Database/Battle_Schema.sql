@@ -26,8 +26,10 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Character` (
   `ClassId` INT NULL ,
   `Name` VARCHAR(45) NOT NULL UNIQUE,
   `Level` INT NOT NULL DEFAULT 1 ,
+  `EXP` INT NOT NULL ,
   PRIMARY KEY (`Id`) ,
   INDEX `Battle_Character_Class_Fk_idx` (`ClassId` ASC) ,
+  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) ,
   CONSTRAINT `Battle_Character_Class_Fk`
     FOREIGN KEY (`ClassId` )
     REFERENCES `jgerma08_db`.`Battle_Class` (`Id` )
@@ -171,7 +173,10 @@ END$$
 
 delimiter $$
 
-CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_LevelUp`(p_characterid INT)
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_LevelUp`
+(
+	p_characterid INT
+)
 BEGIN
 	-- First, update level.
 	UPDATE Battle_Character SET Level = Level + 1 WHERE Id = p_characterid;
@@ -180,7 +185,7 @@ BEGIN
 	UPDATE Battle_ObjectStatValue BOS
 	 JOIN Battle_Character BC ON BOS.ObjectId = BC.Id
 	 JOIN Battle_ClassProgression BCP ON BOS.StatId = BCP.StatId AND BC.ClassId = BCP.ClassId
-	SET BOS.Value= BOS.Value + BCP.Progression  
+	SET BOS.Value = BOS.Value + BCP.Progression  
 	WHERE ObjectId = p_characterid and ObjectType = 6;
 
 END$$
@@ -195,7 +200,8 @@ CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_New`(
 BEGIN
 	-- First add the new character entry
 	DECLARE characterid INT;
-	INSERT INTO `jgerma08_db`.`Battle_Character` (`ClassId`, `Name`, `Level`) VALUES (p_classid, p_charactername, 1);
+	INSERT INTO `jgerma08_db`.`Battle_Character` (`ClassId`, `Name`, `Level`, `EXP`) 
+		VALUES (p_classid, p_charactername, 1, 15);
 	
 	SET characterid = (select LAST_INSERT_ID());
 
@@ -215,6 +221,7 @@ delimiter $$
 CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_Save`(
 	p_characterid INT,
 	p_name CHAR(45),
+	p_exp INT,
 	p_hp INT,
 	p_mp INT,
 	p_str INT,
@@ -224,7 +231,7 @@ CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Battle_Character_Save`(
 	p_dex INT	
 )
 BEGIN
-	UPDATE Battle_Character SET Name = p_name WHERE Id = p_characterid;
+	UPDATE Battle_Character SET Name = p_name, EXP = p_exp WHERE Id = p_characterid;
 
 	UPDATE Battle_ObjectStatValue SET Value = p_hp 
 		WHERE StatId = 1 and ObjectType = 6 and ObjectId = p_characterid;

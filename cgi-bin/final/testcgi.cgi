@@ -109,14 +109,21 @@ db_connect();
 #print GrayscalePerspective::Battle::Service::initiateBattle(1, 1);
 #print GrayscalePerspective::Battle::Service::initiateBattle(1, 2);
 
-my $charobj = new GrayscalePerspective::Character( 1, 1 );
-my $charobj2 = new GrayscalePerspective::Character( 2, 1 );
 
-GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15, $charobj, $charobj2, "Never!" );
-GrayscalePerspective::Battle::Service::takeTurn( 15,  $charobj2, $charobj, "Annihilate!" );
+my $charobj = new GrayscalePerspective::Character( 1, 1 );
+my $charobj2 = new GrayscalePerspective::Character( 3, 1 );
+my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($charobj, $charobj2);
+
+print $battleid;
+if ( defined ( $battleid ) ) {
+
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid, $charobj, $charobj2, "Never!" );
+	GrayscalePerspective::Battle::Service::takeTurn( $battleid,  $charobj2, $charobj, "Annihilate!" );
+}
+

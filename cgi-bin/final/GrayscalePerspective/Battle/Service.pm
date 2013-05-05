@@ -136,7 +136,19 @@ sub takeTurn {
 		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)", \@params);
 		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
 			#initiate turn
-			my $damage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
+			my $physicaldamage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
+			my $magicaldamage = $character->getStatCollection()->getMAG()->getCurrentValue() - $opponent->getStatCollection()->getMDEF()->getCurrentValue();
+			
+			if($physicaldamage <= 0 ) {
+				$physicaldamage = 0;
+			}
+			
+			if($magicaldamage <= 0 ) {
+				$magicaldamage = 0;
+			}
+			
+			my $damage = $physicaldamage + $magicaldamage;
+			
 			$opponent->getStatCollection()->getHP()->damage($damage);
 			$opponent->save();
 			
@@ -211,9 +223,63 @@ sub _saveBattleLog {
 sub _endBattle {
 	my $battleid = $_[0];
 	my $winner   = $_[1];
+	my $loser    = $_[2];
 	
-	_saveBattleLog( $battleid, $winner->getId(), "Battle ended, and the victory goes to " . $winner->getName() . "!", "");
+	my $exp = _getRewardEXP( $winner, $loser );
+	_awardEXP($winner, $exp);
+	_saveBattleLog( $battleid, $winner->getId(), "Battle ended, and the victory goes to " . $winner->getName() . ", and they earned $exp points!", "");
 	_updateBattleStatus( $battleid, $Battle_Completed );
+}
+
+# _getRewardEXP() - Gets the amount of exp for the winner. It's based on the level difference of characters and the formula x^2 + 15.
+#
+# $_[0] = The character object that won the battle.
+# $_[1] = The character object that lost the battle.
+#
+# Returns the amount of exp to award the winner.
+sub _getRewardEXP {
+	my $winner = $_[0];
+	my $loser = $_[1];
+	
+	my $leveldiff = $winner->getLevel() - $loser->getLevel();
+	my $exp = ($winner->getLevel * 10) - ($leveldiff * $winner->getLevel() * 10);
+	if( $exp <= 0 ) {
+		$exp = 1;
+	}
+	
+	return $exp;
+}
+
+# _awardEXP() - 
+# 
+# Awards the given character an EXP amount. If the current exp - awarded exp remains above zero, no Level up occurs. 
+# If the current exp - awarded exp goes below zero, then the character levels up. 
+# In this case, we find the amount for the next level up and add back the negative amount from before.
+# In the case that the exp is still negative, we keep going in a loop until the characters exp remains above 0. 
+#
+# $_[0] = The character object to award the EXP to
+# $_[1] = The amount of exp to award.
+sub _awardEXP {
+	my $character = $_[0];
+	my $exp = $_[1];
+	
+	my $currentexp = $character->getEXP();
+	$currentexp = $currentexp - $exp;
+	
+	if( $currentexp <= 0 ) { #Level Up! Wooo!
+		while ( $currentexp <= 0 ) {
+			my $nextlevel = $character->getLevel() + 1;
+			my $nextexp = (($nextlevel ** 2) + 15) + $currentexp;			
+			$character->setEXP($nextexp);
+			$character->LevelUp(); #LevelUp calls save.
+			
+			$currentexp = $nextexp;
+		}
+	}
+	else {
+		$character->setEXP($currentexp);
+		$character->save();
+	}
 }
 
 # _areCharactersBattlingEachOther() - Checks to see if the given character ids are battling each other in an active battle.
@@ -247,24 +313,30 @@ sub _areCharactersBattlingEachOther {
 # $_[1] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
 # $_[2] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
 #
-# It wil return the $Battle_Completed status if the battle is over, otherwise it returns nothing.
+# It wil return the $Battle_Completed status if the battle is over, otherwise it returns undef.
 sub _checkBattleParameters {
 	my $battleid       = $_[0];
 	my $character      = $_[1];
 	my $opponent       = $_[2];
 	
 	my $winner = undef;
+	my $loser = undef;
+	
 	if ( $character->isHealthZero() ) {
 		$winner = $opponent;
+		$loser = $character;
 	}
-	elsif ( $opponent->isHealthZero ) {
+	elsif ( $opponent->isHealthZero() ) {
 		$winner = $character;
+		$loser = $opponent;
 	}
 	
 	if( defined ( $winner ) ) {
-		_endBattle ( $battleid, $winner );
+		_endBattle ( $battleid, $winner, $loser );
 		return $Battle_Completed;
 	}
+	
+	return undef;
 }
 
 # _checkBattleStatus() - Checks and returns the current status of the specified battle from the Database.
