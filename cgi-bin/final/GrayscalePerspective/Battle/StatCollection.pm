@@ -66,7 +66,7 @@ sub saveCurrentValuesToHashRef {
 			$hashref->{DEF} = $self->{_def}->getCurrentValue();
 			$hashref->{MAG} = $self->{_mag}->getCurrentValue();
 			$hashref->{MDEF} = $self->{_mdef}->getCurrentValue();
-			$hashref->{DEX} = $self->{_def}->getCurrentValue();
+			$hashref->{DEX} = $self->{_dex}->getCurrentValue();
 			
 			return $hashref;
 		}
