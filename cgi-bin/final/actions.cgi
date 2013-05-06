@@ -430,9 +430,12 @@ sub _saveFlashcardToTemplate {
 	my $template  = $_[0];
 	my $flashcard = $_[1];	
 	
-	$template->param(QUESTION => $flashcard->getQuestion() );
-	$template->param(ATTEMPTS => $flashcard->getAttempts() || 0 );
-	$template->param(CORRECT  => $flashcard->getCorrect() || 0 );
+	$template->param(QUESTION          => $flashcard->getQuestion() );
+	$template->param(ATTEMPTS          => $flashcard->getAttempts() || 0 );
+	$template->param(CORRECT           => $flashcard->getCorrect() || 0 );
+	
+	my $points = int( ( $flashcard->getAttempts() || 1 ) / ( $flashcard->getCorrect() || 1 ) ) * 10;
+	$template->param(OBTAINABLE_POINTS => ( $points  ) );
 }
 
 sub _getBattleClassArrayRef {
