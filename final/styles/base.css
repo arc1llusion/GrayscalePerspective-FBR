@@ -425,3 +425,24 @@ div.deck-list, div.flashcards, div.quiz, div.battle, div.invalid-content {
 	p.action-message {
 		font-style: italic;
 	}
+	
+	div.system-message.success {
+		border: solid 1px #8fd88f;
+		background-color: #f1fbef;
+	}
+	
+	div.system-message.error {
+		border: solid 1px #d99f9f;
+		background-color: #fbedee;
+	}
+	
+	div.system-message {
+		padding: 15px 20px 20px 70px;
+		font-size: 13px;
+		margin: 5px 0;
+		display:none;
+	}
+	
+	.header ul li:nth-child(3) {
+		display:none !important;
+	}

@@ -99,7 +99,7 @@ function CreateDeck (showLoader, result, callback) {
 		title: $("#gs_deckname").val(),
 		category: $("#gs_category").val()
 	}, function(data, status) {		
-		$(result).html(data);
+		showSuccessMessage(result, data);
 		if(typeof(callback) == 'function') {
 			callback();
 		}
@@ -117,8 +117,8 @@ function CreateFlashcard (showLoader, result, callback) {
 		question: $("#gs_question").val(),
 		answer: $("#gs_answer").val(),
 		deckid: queryObj()["deckid"]
-	}, function(data, status) {		
-		$(result).html(data);
+	}, function(data, status) {
+		showSuccessMessage(result, data);
 		if(typeof(callback) == 'function') {
 			callback();
 		}
@@ -167,6 +167,12 @@ function Attack(callback) {
 			callback();
 		}
 	});
+}
+
+function showSuccessMessage(e, message) {
+	$(e).addClass("success");
+	$(e).css("display", "block");
+	$(e).html(message);
 }
 
 function showLoadingImageInElement(element) {
