@@ -37,11 +37,13 @@ my ( %actions );
 			 
 			 "createdeck"   	=> \&CreateDeck,
 			 "createfc"         => \&CreateFlashcard,
+			 "chkanswer"        => \&CheckFlashcardAnswer,
 			 
 			 "gethome"          => \&GetHomeTemplate,
 			 "getlogin"         => \&GetLoginTemplate,
 			 "getdecklisting"   => \&GetDeckListingTemplate,
 			 "getflashcards"    => \&GetFlashcardTemplate,
+			 "getquiz"          => \&GetQuizTemplate,
 			 "getbattle"        => \&GetBattleTemplate,
 			 
 			 "attack"           => \&Attack,
@@ -157,6 +159,21 @@ sub CreateFlashcard {
 	print "Success";
 }
 
+sub CheckFlashcardAnswer {
+	print $cgi->header;
+	my $cardid = param('cardid');
+	my $answer = param('answer');
+
+	my $flashcard = _getSessionParam("currentFlashcard");
+
+	if ( $flashcard->checkAnswer( $answer ) ) {
+		print 1;
+	}
+	else {
+		print 0;
+	}
+}
+
 ############################
 #       HTML Template      #
 ############################
@@ -185,7 +202,7 @@ sub GetDeckListingTemplate {
 	$template->param(DECK_LISTING_CONTENT => 1);
 	
 	if( _isUserLoggedIn() ) {
-		$template->param(LOGGED_IN => _isUserLoggedIn() );
+		$template->param(LOGGED_IN => 1 );
 		$template->param(CAT_LOOP => _getCategoriesArrayRef() );
 		$template->param(DECK_LOOP => _getDecksArrayRef( _getLoggedInUser()->getId() ) );
 	}
@@ -204,6 +221,26 @@ sub GetFlashcardTemplate {
 	
 		$template->param(LOGGED_IN => 1 );
 		$template->param(FLASHCARDS_LOOP => _getFlashcardsArrayRef( $deckid ) );
+	}
+	
+	print $template->output;	
+}
+
+sub GetQuizTemplate {
+	print $cgi->header;
+	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
+	$template->param(FLASHCARD_QUIZ => 1);
+	
+	if( _isUserLoggedIn() ) {
+		my $cardid = param('cardid');
+	
+		$template->param(LOGGED_IN => 1 );
+		
+		my $flashcard = new GrayscalePerspective::Flashcard( $cardid, 1 );
+		$flashcard->setUser( _getLoggedInUser()->getId() );
+		_saveFlashcardToTemplate( $template, $flashcard );
+		
+		_saveSessionParam( "currentFlashcard", $flashcard );
 	}
 	
 	print $template->output;	
@@ -387,6 +424,15 @@ sub _getFlashcardsArrayRef {
 	}
 	
 	return \@flashcardref;
+}
+
+sub _saveFlashcardToTemplate {
+	my $template  = $_[0];
+	my $flashcard = $_[1];	
+	
+	$template->param(QUESTION => $flashcard->getQuestion() );
+	$template->param(ATTEMPTS => $flashcard->getAttempts() || 0 );
+	$template->param(CORRECT  => $flashcard->getCorrect() || 0 );
 }
 
 sub _getBattleClassArrayRef {

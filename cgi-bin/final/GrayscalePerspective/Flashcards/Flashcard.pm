@@ -19,7 +19,10 @@ sub new
         _id            => shift,
 		_deckid        => undef,
 		_question      => undef,
-		_answer        => undef
+		_answer        => undef,
+		_attempts      => undef,
+		_correct       => undef,
+		_userid        => undef
     };
 	
 	my $loadImmediate = shift;
@@ -37,7 +40,9 @@ sub new
 sub load {
 	my ( $self ) = @_;
 	my @params = ($self->{_id});
-	my $result = GrayscalePerspective::DAL::execute_single_row_hashref("SELECT * FROM Flashcard WHERE Id = ?", \@params);
+	my $result = GrayscalePerspective::DAL::execute_single_row_hashref("SELECT FC.Id Id, FC.DeckId, FC.Question, FC.Answer, FR.Attempts, FR.Correct FROM Flashcard FC
+																		INNER JOIN FlashcardResult FR ON FC.Id = FR.FlashcardId
+																		WHERE FC.Id = ?;", \@params);
 	$self->loadFromHashref($result);
 }
 
@@ -49,6 +54,8 @@ sub loadFromHashref {
 	$self->{_deckid}   = $result{DeckId};
 	$self->{_question} = $result{Question};
 	$self->{_answer}   = $result{Answer};
+	$self->{_attempts} = $result{Attempts};
+	$self->{_correct}  = $result{Correct};
 }
 
 sub save {
@@ -57,6 +64,9 @@ sub save {
 	if( not defined $self->{_id} ) {	
 		my @params = ( $self->{_deckid},  $self->{_question}, $self->{_answer} );
 		GrayscalePerspective::DAL::execute_query("INSERT INTO Flashcard(DeckId, Question, Answer) Values(?, ?, ?)", \@params);
+		
+		$self->{_attempts} = 0;
+		$self->{_correct} = 0;
 	}
 	else {	
 		my @params = ( $self->{_deckid},  $self->{_question}, $self->{_answer}, $self->{_id} );
@@ -100,6 +110,42 @@ sub setAnswer {
 sub getAnswer {
 	my ( $self ) = @_;
 	return $self->{_answer};
+}
+
+sub getAttempts {
+	my ( $self ) = @_;
+	return $self->{_attempts};
+}
+
+sub getCorrect {
+	my ( $self ) = @_;
+	return $self->{_correct};
+}
+
+sub setUser {
+	my ( $self, $userid ) = @_;
+	$self->{_userid} = $userid;
+	return $self;
+}
+
+sub checkAnswer {
+	my ( $self, $answer ) = @_;
+	my $result = 0;
+	$self->{_attempts} = $self->{_attempts} + 1;
+	
+	if( $answer eq $self->{_answer} ) {
+		$result = 1;
+		$self->{_correct} = $self->{_correct} + 1;
+	}
+	
+	$self->_saveFlashcardAttempt();
+	return $result;
+}
+
+sub _saveFlashcardAttempt {
+	my ( $self ) = @_;
+	my @params = ( $self->{_id}, $self->{_userid}, $self->{_attempts}, $self->{_correct} );
+	my $result = GrayscalePerspective::DAL::execute_query("call Flashcard_SaveAttempt(?, ?, ?, ?);", \@params);
 }
 
 1;

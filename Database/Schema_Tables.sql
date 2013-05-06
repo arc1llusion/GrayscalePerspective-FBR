@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS UserCharacterMapping;
 DROP TABLE IF EXISTS User_Profile;
 DROP TABLE IF EXISTS User;
 
+DROP TABLE IF EXISTS FlashcardResult;
 DROP TABLE IF EXISTS Flashcard;
 DROP TABLE IF EXISTS Deck;
 DROP TABLE IF EXISTS Category;
@@ -66,6 +67,27 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Flashcard` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`FlashcardResult` (
+  `Id` INT NOT NULL AUTO_INCREMENT ,
+  `FlashcardId` INT NOT NULL ,
+  `UserId` INT NOT NULL ,
+  `Attempts` INT NOT NULL ,
+  `Correct` INT NOT NULL ,
+  PRIMARY KEY (`Id`) ,
+  INDEX `fk_Result_Flashcard_idx` (`FlashcardId` ASC) ,
+  INDEX `fk_Result_User_idx` (`UserId` ASC) ,
+  CONSTRAINT `fk_Result_Flashcard`
+    FOREIGN KEY (`FlashcardId` )
+    REFERENCES `jgerma08_db`.`Flashcard` (`Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Result_User`
+    FOREIGN KEY (`UserId` )
+    REFERENCES `jgerma08_db`.`User` (`Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`UserCharacterMapping` (
   `UserId` INT NOT NULL ,
   `CharacterId` INT NOT NULL ,
@@ -84,7 +106,8 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`UserCharacterMapping` (
 ENGINE = InnoDB;
 
 -- Procedures
-DROP PROCEDURE User_Save;
+DROP PROCEDURE IF EXISTS User_Save;
+DROP PROCEDURE IF EXISTS Flashcard_SaveAttempt;
 
 delimiter $$
 
@@ -117,6 +140,24 @@ call Battle_Character_New(p_classid, p_charactername, io_characterid);
 
 INSERT INTO UserCharacterMapping VALUES(l_userid, io_characterid);
 
+END$$
+
+delimiter $$
+
+CREATE DEFINER=`jgerma08`@`localhost` PROCEDURE `Flashcard_SaveAttempt`(
+	p_cardid INT,
+	p_userid INT,
+	p_attempts INT,
+	p_correct INT
+)
+BEGIN
+	IF ( SELECT 1 FROM FlashcardResult WHERE UserId = p_userid AND FlashcardId = P_cardid ) THEN
+		UPDATE FlashcardResult SET Attempts = p_attempts, Correct = p_correct
+			WHERE  UserId = p_userid AND FlashcardId = P_cardid;
+	ELSE
+		INSERT INTO FlashcardResult (FlashcardId, UserId, Attempts, Correct)
+					VALUES(p_cardid, p_userid, p_attempts, p_correct);
+	END IF;
 END$$
 
 DELIMITER ;

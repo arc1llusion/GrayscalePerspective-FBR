@@ -125,6 +125,27 @@ function CreateFlashcard (showLoader, result, callback) {
 	});
 }
 
+function CheckFlashcardAnswer(showLoader, result, callback) {
+	if(showLoader && typeof(result) != 'undefined') {
+		showLoadingImageInElement(result);
+	}
+	
+	$.post(actionUrl, 
+	{
+		action: "chkanswer",
+		answer: $("#gs_quiz_answer").val(),
+		cardid: queryObj()["cardid"]
+	}, function(data, status) {	
+		if(data == "1")
+			showSuccessMessage(result, "Your answer was correct!");
+		else
+			showErrorMessage(result, "Sorry! Your answer was incorrect!");
+		if(typeof(callback) == 'function') {
+			callback();
+		}
+	});
+}
+
 function GetHTMLTemplate(data, output, showLoader, callback) {
 	if(showLoader && typeof(output) != 'undefined') {
 		showLoadingImageInElement(output);
@@ -171,6 +192,12 @@ function Attack(callback) {
 
 function showSuccessMessage(e, message) {
 	$(e).addClass("success");
+	$(e).css("display", "block");
+	$(e).html(message);
+}
+
+function showErrorMessage(e, message) {
+	$(e).addClass("error");
 	$(e).css("display", "block");
 	$(e).html(message);
 }

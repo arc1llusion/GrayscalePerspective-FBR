@@ -7,23 +7,23 @@
 	<script src="../js/global.js" type="text/javascript"></script>
 	<script type="text/javascript"> 
 		$(document).ready(function() {
-			loadFlashcards();
+			loadQuiz( queryObj()["cardid"] );
+			
 			ShowHideLoginLogoutLink();
 		});
-	
-		function loadFlashcards() {
-			GetHTMLTemplate( {action: "getflashcards", deckid: queryObj()["deckid"] }, $('#body'), true, function() {
-				$("#gs_createfc_submit").on("click", function() {
-					CreateFlashcard(true, $('#sysmessage'), function() {
-						loadFlashcards();
+		
+		function loadQuiz(cardIdParam) {
+			GetHTMLTemplate( {action: "getquiz", cardid: cardIdParam }, $('#body'), true, function() {
+				$("#gs_quiz_submit").on("click", function() {
+					CheckFlashcardAnswer(true, $("#sysmessage"), function() {
+						var num = parseInt( queryObj()["cardid"] );
+						loadQuiz(num + 1);
 					});
 				});
-				
-				$("#gs_start_quiz").on("click", function() {
-					location.href = "Quiz.html?cardid=1";
-				});
-			});
+			});	
 		}
+	
+
 	</script>
 </head>
 <body>
@@ -35,7 +35,7 @@
                     <h1><span>Flashcards</span><span>made fun</span></h1>
                     <ul>
                         <li><a href="../index.html">Home</a></li>
-                        <li><a href="DeckListing.html" class="current">Flashcards</a></li>
+                        <li><a href="DeckListing.html">Flashcards</a></li>
                         <li><a href="Discussions.html">Discussion</a></li>
                         <li><a href="Battle.html">Battle</a></li>
                         <li id="login"><a href="Login.html">Login / Register</a></li>
