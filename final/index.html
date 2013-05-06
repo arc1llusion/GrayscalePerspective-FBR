@@ -8,36 +8,7 @@
 	<script type="text/javascript"> 
 		$(document).ready(function() {
 			GetHTMLTemplate( {action: "gethome"}, $('#body'), true, function() {
-			/*
-				if(!IsLoggedIn()) {
-					$("#loggedin").hide();
-					$("#loginmodal").hide();
-					$("#registermodal").hide();
-					
-					$("#loginlink").on('click', function(e) {
-						e.preventDefault();
-						$("#loginmodal").show();
-						$("#registermodal").hide();
-						$("#result").text("");
-					});
-					
-					$("#registerlink").on('click', function(e) {
-						e.preventDefault();
-						$("#registermodal").show();
-						$("#loginmodal").hide();
-						$("#result").text("");
-					});
-				}
-				else {		
-					$("#guest").hide();	
-					
-					$("#logoutlink").on('click', function(e) {					
-						e.preventDefault();
-						LogOut();
-					});
 
-					GetDecksForLoggedInUser($('#result'));
-				}*/
 			});
 			
 			ShowHideLoginLogoutLink();
