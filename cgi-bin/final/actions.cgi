@@ -35,12 +35,7 @@ my ( %actions );
 			 "login"        	=> \&LogIn,
 			 "logout"       	=> \&LogOut,
 			 
-			 "getdecksuser" 	=> \&GetAllDecksForUser,
 			 "createdeck"   	=> \&CreateDeck,
-			 
-			 "header"           => \&GetHeader,
-			 "createdecktmpl"   => \&GetCreateDeckHtml,
-			 "decklisting"      => \&GetDeckListing,
 			 
 			 "gethome"          => \&GetHomeTemplate,
 			 "getlogin"         => \&GetLoginTemplate,
@@ -137,17 +132,6 @@ sub RegisterUser {
 ############################
 #    Flashcard Related     #
 ############################
-sub GetAllDecksForUser {
-	print $cgi->header;
-	my $user = _getLoggedInUser();
-	
-	my $userid = $user->getId();
-	my $decks_ref = GrayscalePerspective::FlashcardService::getDecksByUser($userid);
-	my @decks = @$decks_ref;
-	foreach my $deck (@decks) {
-		print $deck->getTitle() . "<br />";
-	}
-}
 
 sub CreateDeck {
 	print $cgi->header;
@@ -164,60 +148,6 @@ sub CreateDeck {
 ############################
 #       HTML Template      #
 ############################
-
-sub GetHeader {
-	my $template = HTML::Template->new(filename => 'Templates/header.tmpl');
-	$template->param(LOGGEDIN => _isUserLoggedIn());
-	
-	if (_isUserLoggedIn()) {
-		my $user = _getLoggedInUser();
-		$template->param(USERNAME => $user->getUsername());
-	}
-	
-	
-
-	
-	#$template->param(CLASS_LOOP => \@classref);
-	
-	print $cgi->header;
-	print $template->output;	
-}
-
-sub GetCreateDeckHtml {
-	my $template = HTML::Template->new(filename => 'Templates/CategoriesDropdown.tmpl');
-	#$template->param(LOGGEDIN => _isUserLoggedIn());
-	
-	print $cgi->header;
-	
-	my @categories = @{GrayscalePerspective::FlashcardService::getAllCategories()};
-	
-	my @catref = ();
-	foreach my $catobj (@categories) {
-		push(@catref, $catobj->getHashRef());
-	}	
-	
-	$template->param(CAT_LOOP => \@catref);
-	print $template->output;	
-}
-
-sub GetDeckListing {
-	my $template = HTML::Template->new(filename => 'Templates/decklisting.tmpl');
-	print $cgi->header;
-	my $user = _getLoggedInUser();	
-	my $userid = $user->getId();
-	my @decks = @{GrayscalePerspective::FlashcardService::getDecksByUser($userid)};
-	
-	my @deckref = ();
-	foreach my $deckobj (@decks) {
-		my %deckhash;
-		$deckhash{ID} = $deckobj->getId();
-		$deckhash{TITLE} = $deckobj->getTitle();
-		$deckhash{DECK_LINK} = "https://crux.baker.edu/~jgerma08/final/";
-		push(@deckref, \%deckhash);
-	}
-	$template->param(DECK_LOOP => \@deckref);
-	print $template->output;	
-}
 
 sub GetHomeTemplate {
 	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
@@ -241,7 +171,12 @@ sub GetLoginTemplate {
 sub GetDeckListingTemplate {
 	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
 	$template->param(DECK_LISTING_CONTENT => 1);
-	$template->param(LOGGED_IN => _isUserLoggedIn() );
+	
+	if( _isUserLoggedIn() ) {
+		$template->param(LOGGED_IN => _isUserLoggedIn() );
+		$template->param(CAT_LOOP => _getCategoriesArrayRef() );
+		$template->param(DECK_LOOP => _getDecksArrayRef( _getLoggedInUser()->getId() ) );
+	}
 	
 	print $cgi->header;
 	print $template->output;	
@@ -383,6 +318,32 @@ sub _getLoggedInUser {
 sub _isUserLoggedIn {
 	my $session = _getSession();
 	return $session->param('loggedin');
+}
+
+sub _getCategoriesArrayRef {
+	my @categories = @{GrayscalePerspective::FlashcardService::getAllCategories()};
+	
+	my @catref = ();
+	foreach my $catobj (@categories) {
+		push(@catref, $catobj->getHashRef());
+	}	
+	
+	return \@catref;
+}
+
+sub _getDecksArrayRef {
+	my $userid = $_[0];
+	my @decks = @{GrayscalePerspective::FlashcardService::getDecksByUser($userid)};
+	
+	my @deckref = ();
+	foreach my $deckobj (@decks) {
+		my %deckhash;
+		$deckhash{ID} = $deckobj->getId();
+		$deckhash{TITLE} = $deckobj->getTitle();
+		push(@deckref, \%deckhash);
+	}
+	
+	return \@deckref;
 }
 
 sub _getBattleClassArrayRef {

@@ -88,7 +88,7 @@ function GetDecksForLoggedInUser(result) {
 	GetHTMLTemplate( {action: "decklisting"}, result, true);
 }
 
-function CreateDeck (showLoader, result) {
+function CreateDeck (showLoader, result, callback) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);
 	}
@@ -100,6 +100,9 @@ function CreateDeck (showLoader, result) {
 		category: $("#gs_category").val()
 	}, function(data, status) {		
 		$(result).html(data);
+		if(typeof(callback) == 'function') {
+			callback();
+		}
 	});
 }
 

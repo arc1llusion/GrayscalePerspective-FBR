@@ -7,12 +7,19 @@
 	<script src="../js/global.js" type="text/javascript"></script>
 	<script type="text/javascript"> 
 		$(document).ready(function() {
-			GetHTMLTemplate( {action: "getdecklisting"}, $('#body'), true, function() {
-			});
+			loadDeckListing();
 			ShowHideLoginLogoutLink();
 		});
 	
-
+		function loadDeckListing() {
+			GetHTMLTemplate( {action: "getdecklisting"}, $('#body'), true, function() {
+				$("#gs_createdeck_submit").on("click", function() {
+					CreateDeck(true, $('#sysmessage'), function() {
+						loadDeckListing();
+					});
+				});
+			});
+		}
 	</script>
 </head>
 <body>
@@ -32,6 +39,7 @@
                     </ul>
                 </div>
             </div>
+			<div id="sysmessage"></div>
 			<div id="body"></div>
             <div class="footer clear-fix">
                 <p>&copy; 2013 All Rights Reserved</p>

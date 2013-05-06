@@ -116,41 +116,37 @@
 </TMPL_IF>
 <TMPL_IF NAME="DECK_LISTING_CONTENT">
 	<TMPL_IF NAME="LOGGED_IN">
+		<div class="create-deck">
+			<h2>Create a Deck</h2>
+			<div class="form-row">
+				<label>Category</label>
+				<div class="form-value">
+					<select id="gs_category">
+						<TMPL_LOOP NAME="CAT_LOOP">
+									<option value="<TMPL_VAR NAME=ID>"><TMPL_VAR NAME=TITLE></option>
+						</TMPL_LOOP>
+					</select>
+				</div>
+			</div>
+			<div class="form-row">
+				<label>Deck Name</label>
+				<div class="form-value">
+					<input type="text" name="gs_deckname" id="gs_deckname" />
+				</div>
+			</div>
+			<div class="form-row">
+				<label></label>
+				<div class="form-value">
+					<input type="button" name="gs_createdeck_submit" id="gs_createdeck_submit" value="Create Deck"/>
+				</div>
+			</div>				
+		</div>
 	    <div class="deck-list">
         <h2>Deck List</h2>
 			<div class="clear-fix">
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
-				<a href="Flashcards.aspx" class="decks">Click Me!!!</a>
+				<TMPL_LOOP NAME="DECK_LOOP">
+					<a href="Flashcards.aspx?deckid=<TMPL_VAR NAME=ID>" class="decks"><TMPL_VAR NAME="TITLE"></a>
+				</TMPL_LOOP>
 			</div>
 		</div>
 	<TMPL_ELSE>
