@@ -80,6 +80,24 @@ sub getDecksByCategoryAndUser {
 	return \@decks;
 }
 
+sub getFlashcardsByDeck {
+	my ( $deckid ) = $_[0];
+	my @params = ( $deckid );
+	
+	my @flashcards_raw = @{GrayscalePerspective::DAL::execute_table_arrayref("SELECT * FROM Flashcard WHERE DeckId = ?", \@params)};
+	my @flashcards = ();
+	
+	foreach $flashcard (@flashcards_raw) {
+
+		my $temp = new GrayscalePerspective::Flashcard();
+		$temp->loadFromHashref($flashcard);
+		
+		push(@flashcards, $temp);
+	}
+	
+	return \@flashcards;
+}
+
 # getDecksByUser( user_id )
 # Gets the flashcard decks by the user id that created the decks.
 #

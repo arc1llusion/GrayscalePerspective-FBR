@@ -36,10 +36,12 @@ my ( %actions );
 			 "logout"       	=> \&LogOut,
 			 
 			 "createdeck"   	=> \&CreateDeck,
+			 "createfc"         => \&CreateFlashcard,
 			 
 			 "gethome"          => \&GetHomeTemplate,
 			 "getlogin"         => \&GetLoginTemplate,
 			 "getdecklisting"   => \&GetDeckListingTemplate,
+			 "getflashcards"    => \&GetFlashcardTemplate,
 			 "getbattle"        => \&GetBattleTemplate,
 			 
 			 "attack"           => \&Attack,
@@ -145,6 +147,16 @@ sub CreateDeck {
 	print "Success";
 }
 
+sub CreateFlashcard {
+	print $cgi->header;
+	my $deckid = param('deckid');
+	my $question = param('question');
+	my $answer = param('answer');
+	
+	GrayscalePerspective::FlashcardService::createFlashcard( $deckid, $question, $answer );
+	print "Success";
+}
+
 ############################
 #       HTML Template      #
 ############################
@@ -179,6 +191,21 @@ sub GetDeckListingTemplate {
 	}
 	
 	print $cgi->header;
+	print $template->output;	
+}
+
+sub GetFlashcardTemplate {
+	print $cgi->header;
+	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
+	$template->param(FLASHCARD_CONTENT => 1);
+	
+	if( _isUserLoggedIn() ) {
+		my $deckid = param('deckid');
+	
+		$template->param(LOGGED_IN => 1 );
+		$template->param(FLASHCARDS_LOOP => _getFlashcardsArrayRef( $deckid ) );
+	}
+	
 	print $template->output;	
 }
 
@@ -344,6 +371,22 @@ sub _getDecksArrayRef {
 	}
 	
 	return \@deckref;
+}
+
+sub _getFlashcardsArrayRef {
+	my $deckid = $_[0];
+	my @cards = @{GrayscalePerspective::FlashcardService::getFlashcardsByDeck($deckid)};
+	
+	my @flashcardref = ();
+	
+	foreach my $cardobj (@cards) {
+		my %cardhash;
+		$cardhash{QUESTION} = $cardobj->getQuestion();
+		$cardhash{ANSWER} = $cardobj->getAnswer();
+		push(@flashcardref, \%cardhash);
+	}
+	
+	return \@flashcardref;
 }
 
 sub _getBattleClassArrayRef {

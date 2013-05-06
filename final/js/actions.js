@@ -106,6 +106,25 @@ function CreateDeck (showLoader, result, callback) {
 	});
 }
 
+function CreateFlashcard (showLoader, result, callback) {
+	if(showLoader && typeof(result) != 'undefined') {
+		showLoadingImageInElement(result);
+	}
+	
+	$.post(actionUrl, 
+	{
+		action: "createfc",
+		question: $("#gs_question").val(),
+		answer: $("#gs_answer").val(),
+		deckid: queryObj()["deckid"]
+	}, function(data, status) {		
+		$(result).html(data);
+		if(typeof(callback) == 'function') {
+			callback();
+		}
+	});
+}
+
 function GetHTMLTemplate(data, output, showLoader, callback) {
 	if(showLoader && typeof(output) != 'undefined') {
 		showLoadingImageInElement(output);
