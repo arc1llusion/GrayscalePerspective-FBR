@@ -4,8 +4,8 @@
 # This module contains a variety of utility methods to make working with the flashcards easier.
 
 package GrayscalePerspective::FlashcardService;
-use GrayscalePerspective::DAL;
 
+use GrayscalePerspective::DAL;
 use GrayscalePerspective::Flashcards::Deck;
 
 use base Exporter;
@@ -80,6 +80,11 @@ sub getDecksByCategoryAndUser {
 	return \@decks;
 }
 
+# getFlashcardsByDeck() - Gets the flashcards by a specified deck id and puts it into an array of objects.
+#
+# $_[0] = deckid - The id of the deck to filter the flashcards.
+#
+# Returns an array reference to the flashcard objects.
 sub getFlashcardsByDeck {
 	my ( $deckid ) = $_[0];
 	my @params = ( $deckid );
