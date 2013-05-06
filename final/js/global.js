@@ -116,3 +116,15 @@ function ShowHideLoginLogoutLink() {
 		});
 	}
 }
+
+/* Gets the query string in JavaScript, since I'm doing mostly everything by AJAX */
+function queryObj() {
+    var result = {}, keyValuePairs = location.search.slice(1).split('&');
+
+    $(keyValuePairs).each(function(index, value) {
+		keyValuePair = value.split('=');
+		result[keyValuePair[0]] = keyValuePair[1] || '';
+    });
+
+    return result;
+}
