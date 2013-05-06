@@ -233,7 +233,7 @@ sub GetBattleTemplate {
 			my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($character, $opponent);
 			$template->param(BATTLE_ID => $battleid);
 			
-			my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid, $character, $opponent );
+			my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid );
 			
 			_saveSessionParam('battleid', $battleid);
 			_saveSessionParam('opponent', $opponent);

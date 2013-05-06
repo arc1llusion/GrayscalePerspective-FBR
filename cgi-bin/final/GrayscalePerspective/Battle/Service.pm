@@ -160,6 +160,11 @@ sub takeTurn {
 	}
 }
 
+# getOpponentCharacterObject() - Gets the id of the opponent for a specified character.
+#
+# $_[0] - The character id to get the opponent for.
+#
+# Returns the id of the character representing the opponent if it succeeds, otherwise it returns 0
 sub getOpponentCharacterObject {
 	my $characterid = $_[0];
 	
@@ -174,13 +179,19 @@ sub getOpponentCharacterObject {
 	return 0;
 }
 
+# getBattleLog() - Gets the battle message for a particular battle. It automatically orders in descending order.
+#
+# $_[0] = The id of the battle to get the battle log messages.
+#
+# Returns the array reference of the battle log hashes.
 sub getBattleLog {
 	my $battleid     = $_[0];
-	my $characterone = $_[1];
-	my $charactertwo = $_[2];
 	
 	my @params = ( $battleid );
-	my $result = GrayscalePerspective::DAL::execute_table_arrayref("SELECT * FROM Battle_Log WHERE BattleId = ? ORDER BY Id DESC", \@params);
+	my $result = GrayscalePerspective::DAL::execute_table_arrayref("SELECT (SELECT Name FROM Battle_Character WHERE Id = BL.CharacterId) Name, ActionMessage, CharacterMessage 
+	FROM Battle_Log BL
+	WHERE BattleId = ?
+	ORDER BY BL.Id DESC;", \@params);
 	
 	my @logs_raw = @{$result};
 	my @logs = ();
@@ -188,14 +199,8 @@ sub getBattleLog {
 	foreach my $log (@logs_raw) {
 		my %loghash;
 		my $charactername;
-		
-		if( $characterone->getId() == $log->{CharacterId} ) {
-			$loghash{Name} = $characterone->getName();
-		}
-		else {
-			$loghash{Name} = $charactertwo->getName();
-		}
-		
+
+		$loghash{Name}             = $log->{Name};
 		$loghash{ActionMessage}    = $log->{ActionMessage};
 		$loghash{CharacterMessage} = $log->{CharacterMessage};
 		
