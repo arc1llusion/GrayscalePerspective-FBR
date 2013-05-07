@@ -35,6 +35,8 @@ my ( %actions );
 			 "login"        	=> \&LogIn,
 			 "logout"       	=> \&LogOut,
 			 
+			 "chkunuser"        => \&CheckUniqueUsername,
+			 
 			 "createdeck"   	=> \&CreateDeck,
 			 "createfc"         => \&CreateFlashcard,
 			 "chkanswer"        => \&CheckFlashcardAnswer,
@@ -132,6 +134,15 @@ sub RegisterUser {
 	print 1;
 }
 
+sub CheckUniqueUsername {
+	my ( $username ) = param("username");
+	
+	my $userobj = new GrayscalePerspective::User();
+	$userobj->setUsername( $username );
+	
+	print $cgi->header;
+	print $userobj->loadFromUsername();
+}
 
 ############################
 #    Flashcard Related     #

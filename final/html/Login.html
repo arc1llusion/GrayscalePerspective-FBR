@@ -13,7 +13,11 @@
 				});
 				$("#gs_login").on("click", function() {
 					LogIn( false, $("#sysmessage") );
-				});	
+				});
+				
+				$("#gs_reg_username").on("blur", function() {
+					CheckUniqueUsername(true, $('#un_username') );
+				});
 			});			
 			
 			ShowHideLoginLogoutLink();

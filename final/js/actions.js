@@ -1,6 +1,24 @@
 var actionUrl = "https://crux.baker.edu/~jgerma08/cgi-bin/final/actions.cgi";
 var homeUrl = "https://crux.baker.edu/~jgerma08/final/";
 
+function CheckUniqueUsername(showLoader, result) {
+	if(showLoader && typeof(result) != 'undefined') {
+		showLoadingImageInElement(result);
+	}
+	
+	$.post(actionUrl, 
+	{
+		action: "chkunuser",
+		username: $("#gs_reg_username").val()
+	}, 
+	function(data, status) {
+		$(result).html("");
+		if(data == "1") {
+			$(result).html("This username already exists!");		
+		}		
+	});
+}
+
 function LogIn(showLoader, result) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);
