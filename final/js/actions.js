@@ -1,7 +1,7 @@
 var actionUrl = "https://crux.baker.edu/~jgerma08/cgi-bin/final/actions.cgi";
 var homeUrl = "https://crux.baker.edu/~jgerma08/final/";
 
-function CheckUniqueUsername(showLoader, result) {
+function CheckUniqueUsername(showLoader, result, callback) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);
 	}
@@ -15,11 +15,14 @@ function CheckUniqueUsername(showLoader, result) {
 		$(result).html("");
 		if(data == "1") {
 			$(result).html("This username already exists!");		
-		}		
+		}
+		if(typeof(callback) == 'function') {
+			callback();
+		}
 	});
 }
 
-function CheckUniqueEmail(showLoader, result) {
+function CheckUniqueEmail(showLoader, result, callback) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);
 	}
@@ -33,12 +36,14 @@ function CheckUniqueEmail(showLoader, result) {
 		$(result).html("");
 		if(data == "1") {
 			$(result).html("This email already exists!");		
-		}		
+		}	
+		if(typeof(callback) == 'function') {
+			callback();
+		}
 	});
 }
-//chkunchname
 
-function CheckUniqueCharacterName(showLoader, result) {
+function CheckUniqueCharacterName(showLoader, result, callback) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);
 	}
@@ -49,10 +54,13 @@ function CheckUniqueCharacterName(showLoader, result) {
 		cname: $("#gs_reg_charactername").val()
 	}, 
 	function(data, status) {
-		$(result).html("");
+		$(result).html("");		
 		if(data == "1") {
 			$(result).html("This character name already exists!");		
-		}		
+		}
+		if(typeof(callback) == 'function') {
+			callback();
+		}
 	});
 }
 
@@ -95,7 +103,7 @@ function RegisterUser(showLoader, result) {
 	if(IsNullOrEmpty(v_password))
 		v_error += "Password can't be empty <br />";
 	if(!ValidatePassword(v_password))
-		v_error += "Password is invalid. It must contain at least 8 chracters, one number, one letter, and one character such as !#$%&? \" <br />";
+		v_error += "Password is invalid. It must contain at least 8 characters, one number, one letter, and one special character such as !#$%&? \" <br />";
 	if(IsNullOrEmpty(v_email))
 		v_error += "Email can't be empty <br />";
 	if(!ValidateEmail(v_email))
