@@ -248,9 +248,14 @@ function Attack(callback) {
 		action: "attack",
 		skill: $('#ddlAttackType').val(),
 		message: v_message
-	}, function(data, status) {		
-		if(typeof(callback) == 'function') {
-			callback();
+	}, function(data, status) {
+		if(data != "1") {
+			showErrorMessageDefault(data);
+		}
+		else {
+			if(typeof(callback) == 'function') {
+				callback();
+			}
 		}
 	});
 }
