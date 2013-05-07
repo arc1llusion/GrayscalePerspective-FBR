@@ -218,47 +218,74 @@
 </TMPL_IF>
 <TMPL_IF NAME="FLASHCARD_QUIZ">
 	<TMPL_IF NAME="LOGGED_IN">
-		<div class="quiz">
-			<h2>Quiz</h2>
-			<div class="clear-fix">
-				<div class="left-column">
-					<div class="form-row">
-						<label><strong>Current Statistics</strong></label>
-						<div class="form-value">
-							[Value]
+		<TMPL_IF NAME="INCOMPLETE">
+			<div class="quiz">
+				<h2>Quiz</h2>
+				<div class="clear-fix">
+					<div class="left-column">
+						<div class="form-row">
+							<label><strong>Obtainable Points</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="OBTAINABLE_POINTS">
+							</div>
+						</div>
+						<div class="form-row">
+							<label><strong>Points Obtained</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="TOTAL_POINTS">
+							</div>
+						</div>
+						<div class="form-row">
+							<label><strong>Total Answered</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="ATTEMPTS">
+							</div>
+						</div>
+						<div class="form-row">
+							<label><strong>Total Correct</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="CORRECT">
+							</div>
 						</div>
 					</div>
-					<div class="form-row">
-						<label><strong>Obtainable Points</strong></label>
-						<div class="form-value">
-							<TMPL_VAR NAME="OBTAINABLE_POINTS">
+					<div class="right-column">
+						<div class="form-row">
+							<label><strong><TMPL_VAR NAME="QUESTION"></strong></label>
+							<div class="form-value"><input type="text" id="gs_quiz_answer" /></div>
 						</div>
-					</div>
-					<div class="form-row">
-						<label><strong>Times Answered</strong></label>
-						<div class="form-value">
-							<TMPL_VAR NAME="ATTEMPTS">
-						</div>
-					</div>
-					<div class="form-row">
-						<label><strong>Times Correct</strong></label>
-						<div class="form-value">
-							<TMPL_VAR NAME="CORRECT">
+						<div class="button-row">
+							<input type="button" value="Submit" id="gs_quiz_submit" />
 						</div>
 					</div>
 				</div>
-				<div class="right-column">
-					<div class="form-row">
-						<label><strong><TMPL_VAR NAME="QUESTION"></strong></label>
-						<div class="form-value"><input type="text" id="gs_quiz_answer" /></div>
-					</div>
-					<div class="button-row">
-						<input type="button" value="Submit" id="gs_quiz_submit" />
-					</div>
-				</div>
+				<input type="hidden" id="hdnCardId" value="<TMPL_VAR NAME=CARD_ID>" />
 			</div>
-			<input type="hidden" id="hdnCardId" value="<TMPL_VAR NAME=CARD_ID>" />
-		</div>
+		<TMPL_ELSE>
+			<div class="quiz">
+				<h2>Quiz Result</h2>
+				<div class="clear-fix">
+					<div class="left-column">
+						<div class="form-row">
+							<label><strong>Points Obtained</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="TOTAL_POINTS">
+							</div>
+						</div>
+						<div class="form-row">
+							<label><strong>Total Answered</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="ATTEMPTS">
+							</div>
+						</div>
+						<div class="form-row">
+							<label><strong>Total Correct</strong></label>
+							<div class="form-value">
+								<TMPL_VAR NAME="CORRECT">
+							</div>
+						</div>
+					</div>
+				</div>
+		</TMPL_IF>
 	<TMPL_ELSE>
 		<TMPL_INCLUDE NAME="invalid.tmpl">
 	</TMPL_IF>

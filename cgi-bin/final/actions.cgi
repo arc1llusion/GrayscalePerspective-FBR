@@ -168,16 +168,20 @@ sub CheckFlashcardAnswer {
 
 	my %quizhash = %{ _getSessionParam("deckid$deckid") };
 	my $flashcardindex = $quizhash{FC_INDEX};
-	my $flashcard = $cards[$flashcardindex];
-	
+	my $flashcard = $cards[$flashcardindex];	
 	$flashcard->setUser( _getLoggedInUser()->getId() );
-	if ( $flashcard->checkAnswer( $answer ) ) {
-		print 1;
+	
+	my $points = $flashcard->checkAnswer( $answer );
+	if ( $points ) {
+		print 1;		
+		$quizhash{FC_TOTALPOINTS} = $quizhash{FC_TOTALPOINTS} + $points;
+		$quizhash{FC_TOTALCORRECT} = $quizhash{FC_TOTALCORRECT} + 1;
 	}
 	else {
 		print 0;
 	}
 	
+	$quizhash{FC_TOTALATTEMPTED} = $quizhash{FC_TOTALATTEMPTED} + 1;
 	$quizhash{FC_INDEX} = $flashcardindex + 1;
 	_saveSessionParam("deckid$deckid", \%quizhash );
 }
@@ -254,8 +258,6 @@ sub GetQuizTemplate {
 		if ( defined ( $quizhashref ) ) {
 			%quizprogress = %{$quizhashref};
 			
-			print "getting here" . $quizprogress{FC_INDEX};
-			
 			my $flashcardindex = $quizprogress{FC_INDEX};
 			$flashcardobject = $cards[$flashcardindex];
 		}
@@ -268,9 +270,16 @@ sub GetQuizTemplate {
 			$flashcardobject = $cards[0];
 		}
 		
-		if( defined ( $flashcardobject) ) {
-			_saveFlashcardToTemplate( $template, $flashcardobject, $quizprogress{FC_INDEX} );
+		if( defined ( $flashcardobject ) ) {
+			$template->param(INCOMPLETE => 1);
+			_saveQuizHashToTemplate( $template, \%quizprogress );		
+			_saveFlashcardToTemplate( $template, $flashcardobject );
 			_saveSessionParam( "deckid$deckid", \%quizprogress );
+		}
+		else {		
+			$template->param(INCOMPLETE => 0);
+			_saveQuizHashToTemplate( $template, \%quizprogress );
+			_saveSessionParam( "deckid$deckid", undef );
 		}
 	}
 	
@@ -465,14 +474,10 @@ sub _getFlashcardsArrayRef {
 sub _saveFlashcardToTemplate {
 	my $template  = $_[0];
 	my $flashcard = $_[1];	
-	my $index     = $_[2];
 	
-	$template->param(CARD_ID           => $index );
 	$template->param(QUESTION          => $flashcard->getQuestion() );
-	$template->param(ATTEMPTS          => $flashcard->getAttempts() || 0 );
-	$template->param(CORRECT           => $flashcard->getCorrect() || 0 );
 	
-	my $points = int( ( ( $flashcard->getAttempts() || 1 ) / ( $flashcard->getCorrect() || 1 ) ) * 10 );
+	my $points = $flashcard->getObtainablePoints();
 	$template->param(OBTAINABLE_POINTS => ( $points  ) );
 }
 
@@ -491,7 +496,7 @@ sub _getBattleClassArrayRef {
 
 sub _saveCharacterToTemplate {
 	my $template     = $_[0];
-	my $character = $_[1];
+	my $character    = $_[1];
 	my $prefix       = $_[2];
 	
 	$template->param($prefix . "_NAME" => $character->getName());
@@ -500,4 +505,16 @@ sub _saveCharacterToTemplate {
 	$template->param($prefix . "_HEALTH" => $character->getStatCollection()->getHP()->getCurrentValue());
 	$template->param($prefix . "_MP" => $character->getStatCollection()->getMP()->getCurrentValue());
 	$template->param($prefix . "_EXP" => $character->getEXP());
+}
+
+sub _saveQuizHashToTemplate {
+	my $template = $_[0];
+	my $quizref  = $_[1];
+	
+	my %quizhash = %{$quizref};
+	
+	$template->param(CARD_ID      => $quizref->{FC_INDEX} );
+	$template->param(ATTEMPTS     => $quizref->{FC_TOTALATTEMPTED} );
+	$template->param(CORRECT      => $quizref->{FC_TOTALCORRECT} );
+	$template->param(TOTAL_POINTS => $quizref->{FC_TOTALPOINTS} );
 }

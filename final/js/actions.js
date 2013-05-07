@@ -203,6 +203,10 @@ function showErrorMessage(e, message) {
 	$(e).html(message);
 }
 
+function hideSysMessage(e) {
+	$(e).css("display", "none");
+}
+
 function showLoadingImageInElement(element) {
 	$(element).html("<img src=\"https://crux.baker.edu/~jgerma08/final/images/ajax-loader.gif\" alt=\"loading\" />");
 }

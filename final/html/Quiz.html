@@ -14,12 +14,17 @@
 		
 		function loadQuiz(deckIdParam, cardIdParam) {
 			GetHTMLTemplate( {action: "getquiz", deckid: deckIdParam, cardid: cardIdParam }, $('#body'), true, function() {
-				$("#gs_quiz_submit").on("click", function() {
-					CheckFlashcardAnswer(true, $("#sysmessage"), function() {
-						var num = parseInt( $("#hdnCardId").val() );
-						loadQuiz( queryObj()["deckid"], num);
+				if ( $("#hdnCardId").length > 0  ) {
+					$("#gs_quiz_submit").on("click", function() {
+						CheckFlashcardAnswer(true, $("#sysmessage"), function() {
+							var num = parseInt( $("#hdnCardId").val() );
+							loadQuiz( queryObj()["deckid"], num);
+						});
 					});
-				});
+				}
+				else {
+					hideSysMessage( $("#sysmessage") );
+				}
 			});	
 		}
 	

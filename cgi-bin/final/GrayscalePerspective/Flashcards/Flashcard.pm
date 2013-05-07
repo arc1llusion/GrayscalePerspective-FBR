@@ -122,6 +122,12 @@ sub getCorrect {
 	return $self->{_correct};
 }
 
+sub getObtainablePoints {
+	my ( $self ) = @_;
+	my $points = int( ( ( $self->getAttempts() || 1 ) / ( $self->getCorrect() || 1 ) ) * 10 );
+	return $points;
+}
+
 sub setUser {
 	my ( $self, $userid ) = @_;
 	$self->{_userid} = $userid;
@@ -130,16 +136,19 @@ sub setUser {
 
 sub checkAnswer {
 	my ( $self, $answer ) = @_;
-	my $result = 0;
+	my $obtainablePoints = $self->getObtainablePoints();
+	my $points = 0;
+	
 	$self->{_attempts} = $self->{_attempts} + 1;
 	
 	if( $answer eq $self->{_answer} ) {
 		$result = 1;
 		$self->{_correct} = $self->{_correct} + 1;
+		$points = $obtainablePoints;
 	}
 	
 	$self->_saveFlashcardAttempt();
-	return $result;
+	return $points;
 }
 
 sub _saveFlashcardAttempt {
