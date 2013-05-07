@@ -450,3 +450,7 @@ div.create-flashcard {
 	.header ul li:nth-child(3) {
 		display:none !important;
 	}
+	
+	div.unique-notification {
+		color:red;
+	}
