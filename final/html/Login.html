@@ -18,6 +18,11 @@
 				$("#gs_reg_username").on("blur", function() {
 					CheckUniqueUsername(true, $('#un_username') );
 				});
+				
+				$("#gs_reg_email").on("blur", function() {
+					CheckUniqueEmail(true, $('#un_email') );
+				});				
+				
 			});			
 			
 			ShowHideLoginLogoutLink();

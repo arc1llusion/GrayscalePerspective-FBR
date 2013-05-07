@@ -19,6 +19,24 @@ function CheckUniqueUsername(showLoader, result) {
 	});
 }
 
+function CheckUniqueEmail(showLoader, result) {
+	if(showLoader && typeof(result) != 'undefined') {
+		showLoadingImageInElement(result);
+	}
+	
+	$.post(actionUrl, 
+	{
+		action: "chkunemail",
+		email: $("#gs_reg_email").val()
+	}, 
+	function(data, status) {
+		$(result).html("");
+		if(data == "1") {
+			$(result).html("This email already exists!");		
+		}		
+	});
+}
+
 function LogIn(showLoader, result) {
 	if(showLoader && typeof(result) != 'undefined') {
 		showLoadingImageInElement(result);

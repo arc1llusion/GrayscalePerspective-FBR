@@ -36,6 +36,7 @@ my ( %actions );
 			 "logout"       	=> \&LogOut,
 			 
 			 "chkunuser"        => \&CheckUniqueUsername,
+			 "chkunemail"       => \&CheckUniqueEmail,
 			 
 			 "createdeck"   	=> \&CreateDeck,
 			 "createfc"         => \&CreateFlashcard,
@@ -142,6 +143,16 @@ sub CheckUniqueUsername {
 	
 	print $cgi->header;
 	print $userobj->loadFromUsername();
+}
+
+sub CheckUniqueEmail {
+	my ( $email ) = param("email");
+	
+	my $userobj = new GrayscalePerspective::User();
+	$userobj->setEmail( $email );
+	
+	print $cgi->header;
+	print $userobj->loadFromEmail();
 }
 
 ############################
