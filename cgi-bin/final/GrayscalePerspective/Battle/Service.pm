@@ -166,7 +166,7 @@ sub takeTurn {
 			$opponent->getStatCollection()->getStat("HP")->damage($damage);
 			$opponent->save();
 			
-			my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit );
+			my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit, $skill );
 			
 			_saveBattleLog($battleid, $character->getId(), $actionmessage, $character->getName() . " says $message" );			
 			_checkBattleParameters($battleid, $character, $opponent);
@@ -491,12 +491,13 @@ sub _generateActionMessage {
 	my $opponent  = $_[1];
 	my $damage    = $_[2];
 	my $ch        = $_[3];
+	my $skill     = $_[4];
 	my $message = "";
 	
 	if ( $ch != 1 ) {
 		$message = "Critical Hit! ";
 	}
-	$message = ( $message || "") . $character->getName() . " did $damage points of damage to " . $opponent->getName();
+	$message = ( $message || "") . $character->getName() . " used $skill and did $damage points of damage to " . $opponent->getName();
 
 	return $message;
 }
