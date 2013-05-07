@@ -299,11 +299,15 @@ div.home {
             text-align: justify;
         }
 
-div.deck-list, div.flashcards, div.quiz, div.battle, div.invalid-content {
+div.deck-list, div.flashcards, div.quiz, div.battle, div.invalid-content, div.create-deck {
     padding: 20px 0 50px 0;
 }
 
-    div.deck-list h2, div.flashcards h2, div.quiz h2, div.battle h2 {
+div.create-flashcard {
+	padding: 20px 0 25px 0;
+}
+
+    div.deck-list h2, div.flashcards h2, div.quiz h2, div.battle h2, div.create-deck h2, div.create-flashcard h2, div.take-quiz h2, div.login h2 {
         margin-bottom: 20px;
     }
 
