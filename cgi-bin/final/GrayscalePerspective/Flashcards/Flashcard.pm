@@ -139,9 +139,12 @@ sub checkAnswer {
 	my $obtainablePoints = $self->getObtainablePoints();
 	my $points = 0;
 	
+	$answer =~ s/^\s+//;
+	$answer =~ s/\s+$//;	
+	
 	$self->{_attempts} = $self->{_attempts} + 1;
 	
-	if( $answer eq $self->{_answer} ) {
+	if( lc ( $answer ) eq lc ( $self->{_answer} ) ) {
 		$result = 1;
 		$self->{_correct} = $self->{_correct} + 1;
 		$points = $obtainablePoints;
