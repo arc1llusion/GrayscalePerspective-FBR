@@ -157,8 +157,6 @@ sub takeTurn {
 		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
 			#initiate turn			
 			$character->load();
-			my $physicaldamage = _getPhysicalDamage( $character, $opponent );
-			my $magicaldamage = _getMagicalDamage( $character, $opponent );
 			my $criticalhit = _getCriticalHitModifier( $character );
 			
 			my $damage = (_getDamage($character, $opponent, "Attack")) * $criticalhit;
@@ -418,6 +416,17 @@ sub _checkBattleStatus {
 	return $battle_in_progress;
 }
 
+# _getDamage() - Gets the amount of damage done by the attacker.
+#
+# It gets the stat collections from both the character and opponent, and also gets the formula from the attacking character.
+# Then, it loops through the hash and replaces any necessary values in the formula string. A P_ prefix indicates the attacking character
+# and a O_ Prefix indicates the opponent character. Once all values are replaced, it uses eval to evaluate the remaining math expression.
+#
+# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
+# $_[2] = Skill - The name of the skill to use for calculating the damage.
+#
+# Returns the damage amount based on physical stats
 sub _getDamage {
 	my $character = $_[0];
 	my $opponent  = $_[1];
@@ -439,43 +448,12 @@ sub _getDamage {
 	}
 	
 	$damage = eval $formula;
+	
+	if ( $damage < 0 ) {
+		$damage = 0;
+	}
+	
 	return $damage;
-}
-
-# _getPhysicalDamage() - Gets the amount of physical damage done by the attacker.
-#
-# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
-# $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
-#
-# Returns the damage amount based on physical stats
-sub _getPhysicalDamage {
-	my $character = $_[0];
-	my $opponent  = $_[1];
-
-	my $physicaldamage = $character->getStatCollection()->getStat("STR")->getCurrentValue() - $opponent->getStatCollection()->getStat("DEF")->getCurrentValue();
-	
-	if($physicaldamage <= 0 ) {
-		$physicaldamage = 0;
-	}
-	return $physicaldamage;
-}
-
-# _getMagicalDamage() - Gets the amount of magical damage done by the attacker.
-#
-# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
-# $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
-#
-# Returns the damage amount based on magical stats
-sub _getMagicalDamage {
-	my $character = $_[0];
-	my $opponent  = $_[1];
-	
-	my $magicaldamage = $character->getStatCollection()->getStat("MAG")->getCurrentValue() - $opponent->getStatCollection()->getStat("MDEF")->getCurrentValue();
-	
-	if($magicaldamage <= 0 ) {
-		$magicaldamage = 0;
-	}
-	return $magicaldamage;
 }
 
 # _getCriticalHitModifier()
