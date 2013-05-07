@@ -41,7 +41,7 @@ sub load {
 	my ( $self ) = @_;
 	my @params = ($self->{_id});
 	my $result = GrayscalePerspective::DAL::execute_single_row_hashref("SELECT FC.Id Id, FC.DeckId, FC.Question, FC.Answer, FR.Attempts, FR.Correct FROM Flashcard FC
-																		INNER JOIN FlashcardResult FR ON FC.Id = FR.FlashcardId
+																		LEFT JOIN FlashcardResult FR ON FC.Id = FR.FlashcardId
 																		WHERE FC.Id = ?;", \@params);
 	$self->loadFromHashref($result);
 }
@@ -54,8 +54,8 @@ sub loadFromHashref {
 	$self->{_deckid}   = $result{DeckId};
 	$self->{_question} = $result{Question};
 	$self->{_answer}   = $result{Answer};
-	$self->{_attempts} = $result{Attempts};
-	$self->{_correct}  = $result{Correct};
+	$self->{_attempts} = $result{Attempts} || 0;
+	$self->{_correct}  = $result{Correct} || 0;
 }
 
 sub save {

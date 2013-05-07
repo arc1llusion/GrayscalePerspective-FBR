@@ -20,7 +20,7 @@
 				});
 				
 				$("#gs_start_quiz").on("click", function() {
-					location.href = "Quiz.html?cardid=1";
+					location.href = "Quiz.html?deckid=" + queryObj()["deckid"];
 				});
 			});
 		}

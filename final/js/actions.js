@@ -134,7 +134,8 @@ function CheckFlashcardAnswer(showLoader, result, callback) {
 	{
 		action: "chkanswer",
 		answer: $("#gs_quiz_answer").val(),
-		cardid: queryObj()["cardid"]
+		cardid: $("#hdnCardId").val(),
+		deckid: queryObj()["deckid"]
 	}, function(data, status) {	
 		if(data == "1")
 			showSuccessMessage(result, "Your answer was correct!");

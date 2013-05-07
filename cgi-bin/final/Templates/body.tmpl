@@ -198,15 +198,15 @@
 					<div class="right-column">
 						<div class="form-row">
 							<label>Times Answered:</label>
-							<div class="form-value">10</div>
+							<div class="form-value"><TMPL_VAR NAME="ATTEMPTS"></div>
 						</div>
 						<div class="form-row">
 							<label>Times Correct:</label>
-							<div class="form-value">10</div>
+							<div class="form-value"><TMPL_VAR NAME="CORRECT"></div>
 						</div>
 						<div class="form-row">
 							<label>Points:</label>
-							<div class="form-value">90</div>
+							<div class="form-value"><TMPL_VAR NAME="OBTAINABLE_POINTS"></div>
 						</div>
 					</div>
 				</div>
@@ -257,6 +257,7 @@
 					</div>
 				</div>
 			</div>
+			<input type="hidden" id="hdnCardId" value="<TMPL_VAR NAME=CARD_ID>" />
 		</div>
 	<TMPL_ELSE>
 		<TMPL_INCLUDE NAME="invalid.tmpl">

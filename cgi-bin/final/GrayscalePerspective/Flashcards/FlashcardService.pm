@@ -90,7 +90,7 @@ sub getFlashcardsByDeck {
 	my @params = ( $deckid );
 	
 	my @flashcards_raw = @{GrayscalePerspective::DAL::execute_table_arrayref("SELECT FC.Id Id, FC.DeckId, FC.Question, FC.Answer, FR.Attempts, FR.Correct FROM Flashcard FC
-																		INNER JOIN FlashcardResult FR ON FC.Id = FR.FlashcardId
+																		LEFT JOIN FlashcardResult FR ON FC.Id = FR.FlashcardId
 																		WHERE FC.DeckId = ?;", \@params)};
 	my @flashcards = ();
 	

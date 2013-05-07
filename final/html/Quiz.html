@@ -7,17 +7,17 @@
 	<script src="../js/global.js" type="text/javascript"></script>
 	<script type="text/javascript"> 
 		$(document).ready(function() {
-			loadQuiz( queryObj()["cardid"] );
+			loadQuiz( queryObj()["deckid"] );
 			
 			ShowHideLoginLogoutLink();
 		});
 		
-		function loadQuiz(cardIdParam) {
-			GetHTMLTemplate( {action: "getquiz", cardid: cardIdParam }, $('#body'), true, function() {
+		function loadQuiz(deckIdParam, cardIdParam) {
+			GetHTMLTemplate( {action: "getquiz", deckid: deckIdParam, cardid: cardIdParam }, $('#body'), true, function() {
 				$("#gs_quiz_submit").on("click", function() {
 					CheckFlashcardAnswer(true, $("#sysmessage"), function() {
-						var num = parseInt( queryObj()["cardid"] );
-						loadQuiz(num + 1);
+						var num = parseInt( $("#hdnCardId").val() );
+						loadQuiz( queryObj()["deckid"], num);
 					});
 				});
 			});	

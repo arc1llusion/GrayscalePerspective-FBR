@@ -161,17 +161,25 @@ sub CreateFlashcard {
 
 sub CheckFlashcardAnswer {
 	print $cgi->header;
-	my $cardid = param('cardid');
 	my $answer = param('answer');
+	my $deckid = param('deckid');
+	my $deck = new GrayscalePerspective::Deck( $deckid, 1 );
+	my @cards = @{$deck->getFlashcards()};
 
-	my $flashcard = _getSessionParam("currentFlashcard");
-
+	my %quizhash = %{ _getSessionParam("deckid$deckid") };
+	my $flashcardindex = $quizhash{FC_INDEX};
+	my $flashcard = $cards[$flashcardindex];
+	
+	$flashcard->setUser( _getLoggedInUser()->getId() );
 	if ( $flashcard->checkAnswer( $answer ) ) {
 		print 1;
 	}
 	else {
 		print 0;
 	}
+	
+	$quizhash{FC_INDEX} = $flashcardindex + 1;
+	_saveSessionParam("deckid$deckid", \%quizhash );
 }
 
 ############################
@@ -231,16 +239,39 @@ sub GetQuizTemplate {
 	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
 	$template->param(FLASHCARD_QUIZ => 1);
 	
-	if( _isUserLoggedIn() ) {
-		my $cardid = param('cardid');
+	my $deckid = param('deckid');
+	my $deck = new GrayscalePerspective::Deck( $deckid, 1 );
+	my @cards = @{$deck->getFlashcards()};
+	my $flashcardobject;
 	
+	my %quizprogress;
+	
+	if( _isUserLoggedIn() ) {	
 		$template->param(LOGGED_IN => 1 );
 		
-		my $flashcard = new GrayscalePerspective::Flashcard( $cardid, 1 );
-		$flashcard->setUser( _getLoggedInUser()->getId() );
-		_saveFlashcardToTemplate( $template, $flashcard );
+		my $quizhashref = _getSessionParam("deckid$deckid");
 		
-		_saveSessionParam( "currentFlashcard", $flashcard );
+		if ( defined ( $quizhashref ) ) {
+			%quizprogress = %{$quizhashref};
+			
+			print "getting here" . $quizprogress{FC_INDEX};
+			
+			my $flashcardindex = $quizprogress{FC_INDEX};
+			$flashcardobject = $cards[$flashcardindex];
+		}
+		else {			
+			$quizprogress{FC_INDEX} = 0;
+			$quizprogress{FC_TOTALPOINTS} = 0;
+			$quizprogress{FC_TOTALCORRECT} = 0;
+			$quizprogress{FC_TOTALATTEMPTED} = 0;
+			
+			$flashcardobject = $cards[0];
+		}
+		
+		if( defined ( $flashcardobject) ) {
+			_saveFlashcardToTemplate( $template, $flashcardobject, $quizprogress{FC_INDEX} );
+			_saveSessionParam( "deckid$deckid", \%quizprogress );
+		}
 	}
 	
 	print $template->output;	
@@ -420,6 +451,11 @@ sub _getFlashcardsArrayRef {
 		my %cardhash;
 		$cardhash{QUESTION} = $cardobj->getQuestion();
 		$cardhash{ANSWER} = $cardobj->getAnswer();
+		$cardhash{ATTEMPTS} = ( $cardobj->getAttempts() || 0 );
+		$cardhash{CORRECT} = ( $cardobj->getCorrect() || 0 );
+		
+		my $points = int( ( ( $cardobj->getAttempts() || 1 ) / ( $cardobj->getCorrect() || 1 ) ) * 10 );
+		$cardhash{OBTAINABLE_POINTS} =  $points;
 		push(@flashcardref, \%cardhash);
 	}
 	
@@ -429,12 +465,14 @@ sub _getFlashcardsArrayRef {
 sub _saveFlashcardToTemplate {
 	my $template  = $_[0];
 	my $flashcard = $_[1];	
+	my $index     = $_[2];
 	
+	$template->param(CARD_ID           => $index );
 	$template->param(QUESTION          => $flashcard->getQuestion() );
 	$template->param(ATTEMPTS          => $flashcard->getAttempts() || 0 );
 	$template->param(CORRECT           => $flashcard->getCorrect() || 0 );
 	
-	my $points = int( ( $flashcard->getAttempts() || 1 ) / ( $flashcard->getCorrect() || 1 ) ) * 10;
+	my $points = int( ( ( $flashcard->getAttempts() || 1 ) / ( $flashcard->getCorrect() || 1 ) ) * 10 );
 	$template->param(OBTAINABLE_POINTS => ( $points  ) );
 }
 

@@ -55,7 +55,9 @@ sub loadFromHashref {
 	$self->{_createddate} = $result{CreatedDate};
 	$self->{_categoryid}  = $result{CategoryId};
 	
-	my @flashcards_raw = @{GrayscalePerspective::DAL::execute_table_arrayref("SELECT * FROM Flashcard WHERE DeckId = ?", \@params)};
+	my @flashcards_raw = @{GrayscalePerspective::DAL::execute_table_arrayref("SELECT FC.Id Id, FC.DeckId, FC.Question, FC.Answer, FR.Attempts, FR.Correct FROM Flashcard FC
+																		LEFT JOIN FlashcardResult FR ON FC.Id = FR.FlashcardId
+																		WHERE FC.DeckId = ?;", \@params)};
 	my @flashcards = ();
 	
 	foreach $card (@flashcards_raw) {
