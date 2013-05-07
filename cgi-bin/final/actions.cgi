@@ -535,8 +535,8 @@ sub _saveCharacterToTemplate {
 	$template->param($prefix . "_NAME" => $character->getName());
 	$template->param($prefix . "_CLASS_NAME" => $character->getClass()->getTitle());
 	$template->param($prefix . "_LEVEL" => $character->getLevel());
-	$template->param($prefix . "_HEALTH" => $character->getStatCollection()->getHP()->getCurrentValue());
-	$template->param($prefix . "_MP" => $character->getStatCollection()->getMP()->getCurrentValue());
+	$template->param($prefix . "_HEALTH" => $character->getStatCollection()->getStat("HP")->getCurrentValue());
+	$template->param($prefix . "_MP" => $character->getStatCollection()->getStat("MP")->getCurrentValue());
 	$template->param($prefix . "_EXP" => $character->getEXP());
 }
 

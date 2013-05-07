@@ -5,6 +5,11 @@ INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (
 INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (2, 'Mage', 'A character capable of great magical prowess. Specializes in spellcasting.');
 INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (3, 'Rogue', 'A character representing strength in stealth. Prefers being a lone wolf, rather than part of a group.');
 
+-- Skill Data
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (1, 1, 'Attack', '[STR]-[DEF]');
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (2, 2, 'Attack', '[MAG]-[MDEF]');
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (3, 3, 'Attack', '([STR]+[DEX])-([DEF]-[MDEF])');
+
 -- Stat Data
 
 INSERT INTO `jgerma08_db`.`Battle_Stat` (`Id`, `Name`, `Description`) VALUES (1, 'HP', 'The health points for the character. When depleted, the character loses in battle.');

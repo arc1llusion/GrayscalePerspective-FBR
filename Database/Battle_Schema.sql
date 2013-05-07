@@ -20,6 +20,20 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Class` (
   PRIMARY KEY (`Id`) )
 ENGINE = InnoDB;
 
+CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Skill` (
+  `Id` INT NOT NULL AUTO_INCREMENT ,
+  `ClassId` INT NOT NULL ,
+  `Name` VARCHAR(45) NOT NULL ,
+  `Formula` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`Id`) ,
+  INDEX `fk_Class_Skill_idx` (`ClassId` ASC) ,
+  CONSTRAINT `fk_Class_Skill`
+    FOREIGN KEY (`ClassId` )
+    REFERENCES `jgerma08_db`.`Battle_Class` (`Id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Character` (
   `Id` INT NOT NULL AUTO_INCREMENT ,
   `ClassId` INT NULL ,

@@ -13,7 +13,8 @@ sub new
     my $self = {
         _id          => shift,
 		_title       => undef,
-		_description => undef
+		_description => undef,
+		_skillhash   => undef
     };
 	
 	my $loadImmediate = shift;
@@ -41,8 +42,27 @@ sub loadFromHashRef {
 	
 	if ( defined ( $hr ) and $hr != 0 ) {
 		my %classhash = %{$hr};
+		$self->{_id} = $classhash{Id};
 		$self->{_title} = $classhash{Title};
 		$self->{_description} = $classhash{Description};
+		$self->loadClassSkills();
+	}
+}
+
+sub loadClassSkills {
+	my ( $self ) = @_;
+	
+	if ( defined ( $self->{_id} ) ) {
+		my @params = ( $self->{_id} );
+		my @skills = @{GrayscalePerspective::DAL::execute_table_arrayref("SELECT * FROM Battle_Skill WHERE ClassId = ?", \@params)};
+		
+		my $skillhash = {};
+		
+		foreach $skill (@skills) {
+			$skillhash->{ $skill->{Name} } = $skill->{Formula};
+		}
+		
+		$self->{_skillhash} = $skillhash;
 	}
 }
 
@@ -71,6 +91,11 @@ sub setDescription {
 sub getDescription {
 	my ( $self ) = @_;
 	return $self->{_description};
+}
+
+sub getSkillFormula {
+	my ( $self, $skillname ) = @_;
+	return $self->{_skillhash}->{$skillname};
 }
 
 1;

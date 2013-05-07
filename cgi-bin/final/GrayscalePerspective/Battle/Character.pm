@@ -202,7 +202,7 @@ sub switchClassById {
 
 sub isHealthZero {
 	my ( $self ) = @_;
-	if ( $self->getStatCollection()->getHP()->getCurrentValue() <= 0 ) {
+	if ( $self->getStatCollection()->getStat("HP")->getCurrentValue() <= 0 ) {
 		return 1;
 	}
 	return 0;
@@ -210,7 +210,7 @@ sub isHealthZero {
 
 sub getCriticalHitRate {
 	my ( $self ) = @_;
-	my $chr = ( $self->getStatCollection()->getDEX()->getCurrentValue() * 100 ) / 256;
+	my $chr = ( $self->getStatCollection()->getStat("DEX")->getCurrentValue() * 100 ) / 256;
 	return ( $chr / 100 );
 }
 

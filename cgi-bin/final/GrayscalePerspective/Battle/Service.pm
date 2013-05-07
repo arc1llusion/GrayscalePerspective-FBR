@@ -164,7 +164,7 @@ sub takeTurn {
 			
 			my $damage = ($physicaldamage + $magicaldamage) * $criticalhit;
 			
-			$opponent->getStatCollection()->getHP()->damage($damage);
+			$opponent->getStatCollection()->getStat("HP")->damage($damage);
 			$opponent->save();
 			
 			my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit );
@@ -429,7 +429,7 @@ sub _getPhysicalDamage {
 	my $character = $_[0];
 	my $opponent  = $_[1];
 
-	my $physicaldamage = $character->getStatCollection()->getSTR()->getCurrentValue() - $opponent->getStatCollection()->getDEF()->getCurrentValue();
+	my $physicaldamage = $character->getStatCollection()->getStat("STR")->getCurrentValue() - $opponent->getStatCollection()->getStat("DEF")->getCurrentValue();
 	
 	if($physicaldamage <= 0 ) {
 		$physicaldamage = 0;
@@ -447,7 +447,7 @@ sub _getMagicalDamage {
 	my $character = $_[0];
 	my $opponent  = $_[1];
 	
-	my $magicaldamage = $character->getStatCollection()->getMAG()->getCurrentValue() - $opponent->getStatCollection()->getMDEF()->getCurrentValue();
+	my $magicaldamage = $character->getStatCollection()->getStat("MAG")->getCurrentValue() - $opponent->getStatCollection()->getStat("MDEF")->getCurrentValue();
 	
 	if($magicaldamage <= 0 ) {
 		$magicaldamage = 0;

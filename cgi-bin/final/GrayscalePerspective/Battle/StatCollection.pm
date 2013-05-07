@@ -11,25 +11,21 @@ use GrayscalePerspective::Battle::AttributePair;
 sub new
 {
     my $class = shift;
-    my $self = {
-        _hp          => undef,
-		_mp          => undef,
-		_str         => undef,
-		_def         => undef,
-		_mag         => undef,
-		_mdef        => undef,
-		_dex         => undef
+    my $self = {		
+		_stathash    => undef
     };
 	
 	my ( $hp, $mp, $str, $def, $mag, $mdef, $dex ) = @_;
 	
-	$self->{_hp}   = new GrayscalePerspective::AttributePair( $hp   ) unless not defined $hp;
-	$self->{_mp}   = new GrayscalePerspective::AttributePair( $mp   ) unless not defined $mp;
-	$self->{_str}  = new GrayscalePerspective::AttributePair( $str  ) unless not defined $str;
-	$self->{_def}  = new GrayscalePerspective::AttributePair( $def  ) unless not defined $def;
-	$self->{_mag}  = new GrayscalePerspective::AttributePair( $mag  ) unless not defined $mag;
-	$self->{_mdef} = new GrayscalePerspective::AttributePair( $mdef ) unless not defined $mdef;
-	$self->{_dex}  = new GrayscalePerspective::AttributePair( $dex  ) unless not defined $dex;
+	my $sthash = {};
+	$sthash->{"HP"} = new GrayscalePerspective::AttributePair( $hp   ) unless not defined $hp;
+	$sthash->{"MP"} = new GrayscalePerspective::AttributePair( $mp   ) unless not defined $mp;
+	$sthash->{"STR"} = new GrayscalePerspective::AttributePair( $str   ) unless not defined $str;
+	$sthash->{"DEF"} = new GrayscalePerspective::AttributePair( $def   ) unless not defined $def;
+	$sthash->{"MAG"} = new GrayscalePerspective::AttributePair( $mag   ) unless not defined $mag;
+	$sthash->{"MDEF"} = new GrayscalePerspective::AttributePair( $mdef   ) unless not defined $mdef;
+	$sthash->{"DEX"} = new GrayscalePerspective::AttributePair( $dex   ) unless not defined $dex;
+	$self->{_stathash} = $sthash;
 
     bless $self, $class;
 	
@@ -42,13 +38,15 @@ sub loadFromHashRef {
 	if ( defined $hashref and ( ref ( $hashref ) eq "HASH" ) ) {
 		my %statcol = %{$hashref};
 		
-		$self->{_hp}   = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{HP} ) ) ) unless not defined $statcol{HP};
-		$self->{_mp}   = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MP} ) ) ) unless not defined $statcol{MP};
-		$self->{_str}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{STR} ) ) ) unless not defined $statcol{STR};
-		$self->{_def}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{DEF} ) ) ) unless not defined $statcol{DEF};
-		$self->{_mag}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MAG} ) ) ) unless not defined $statcol{MAG};
-		$self->{_mdef} = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MDEF} ) ) ) unless not defined $statcol{MDEF};
-		$self->{_dex}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{DEX} ) ) ) unless not defined $statcol{DEX};
+		my $sthash = {};
+		$sthash->{"HP"}   = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{HP} ) )   ) unless not defined $statcol{HP};
+		$sthash->{"MP"}   = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MP} ) )   ) unless not defined $statcol{MP};
+		$sthash->{"STR"}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{STR} ) )   ) unless not defined $statcol{STR};
+		$sthash->{"DEF"}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{DEF} ) )   ) unless not defined $statcol{DEF};
+		$sthash->{"MAG"}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MAG} ) )   ) unless not defined $statcol{MAG};
+		$sthash->{"MDEF"} = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{MDEF} ) )   ) unless not defined $statcol{MDEF};
+		$sthash->{"DEX"}  = new GrayscalePerspective::AttributePair( reverse ( split(/,/, $statcol{DEX} ) )   ) unless not defined $statcol{DEX};
+		$self->{_stathash} = $sthash;
 	}
 	else {
 		print "Stat Collection hashref was invalid.";
@@ -73,39 +71,9 @@ sub saveCurrentValuesToHashRef {
 	return $hashref;
 }
 
-sub getHP {
-	my ( $self ) = @_;
-	return $self->{_hp};
-}
-
-sub getMP {
-	my ( $self ) = @_;
-	return $self->{_mp};
-}
-
-sub getSTR {
-	my ( $self ) = @_;
-	return $self->{_str};
-}
-
-sub getDEF {
-	my ( $self ) = @_;
-	return $self->{_def};
-}
-
-sub getMAG {
-	my ( $self ) = @_;
-	return $self->{_mag};
-}
-
-sub getMDEF {
-	my ( $self ) = @_;
-	return $self->{_mdef};
-}
-
-sub getDEX {
-	my ( $self ) = @_;
-	return $self->{_dex};
+sub getStat {
+	my ( $self, $statname ) = @_;
+	return $self->{_stathash}->{$statname};
 }
 
 1;
