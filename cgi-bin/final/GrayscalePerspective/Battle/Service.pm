@@ -40,6 +40,22 @@ sub getAllClasses {
 	return \@classes;
 }
 
+# doesCharacterExistByName() - Checks if a character name exists already in the database.
+#
+# $_[0] - The character name to check.
+#
+# Returns true if the character name exists, false otherwise.
+sub doesCharacterExistByName {
+	my $charactername = $_[0];
+	
+	my @params = ( $charactername );
+	
+	if ( GrayscalePerspective::DAL::execute_scalar("SELECT 1 FROM Battle_Character WHERE Name = ?", \@params) ) {
+		return 1;
+	}
+	return 0;
+}
+
 # initiateBattle() - Initiates a battle between two characters. Checks certain application constraints such as challenging oneself and if either character
 # is already in battle.
 #

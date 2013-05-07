@@ -21,8 +21,11 @@
 				
 				$("#gs_reg_email").on("blur", function() {
 					CheckUniqueEmail(true, $('#un_email') );
-				});				
+				});		
 				
+				$("#gs_reg_charactername").on("blur", function() {
+					CheckUniqueCharacterName(true, $('#un_chname') );
+				});		
 			});			
 			
 			ShowHideLoginLogoutLink();

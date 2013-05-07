@@ -37,6 +37,7 @@ my ( %actions );
 			 
 			 "chkunuser"        => \&CheckUniqueUsername,
 			 "chkunemail"       => \&CheckUniqueEmail,
+			 "chkunchname"      => \&CheckUniqueCharacterName,
 			 
 			 "createdeck"   	=> \&CreateDeck,
 			 "createfc"         => \&CreateFlashcard,
@@ -154,6 +155,13 @@ sub CheckUniqueEmail {
 	print $cgi->header;
 	print $userobj->loadFromEmail();
 }
+
+sub CheckUniqueCharacterName {
+	my ( $cname ) = param("cname");	
+	print $cgi->header;
+	print GrayscalePerspective::Battle::Service::doesCharacterExistByName( $cname );
+}
+
 
 ############################
 #    Flashcard Related     #

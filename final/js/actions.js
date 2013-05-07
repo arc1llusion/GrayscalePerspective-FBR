@@ -36,6 +36,25 @@ function CheckUniqueEmail(showLoader, result) {
 		}		
 	});
 }
+//chkunchname
+
+function CheckUniqueCharacterName(showLoader, result) {
+	if(showLoader && typeof(result) != 'undefined') {
+		showLoadingImageInElement(result);
+	}
+	
+	$.post(actionUrl, 
+	{
+		action: "chkunchname",
+		cname: $("#gs_reg_charactername").val()
+	}, 
+	function(data, status) {
+		$(result).html("");
+		if(data == "1") {
+			$(result).html("This character name already exists!");		
+		}		
+	});
+}
 
 function LogIn(showLoader, result) {
 	if(showLoader && typeof(result) != 'undefined') {
