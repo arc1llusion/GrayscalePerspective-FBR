@@ -370,24 +370,27 @@ sub Attack {
 sub IssueChallenge {
 	print $cgi->header;
 	my $charactertochallenge = param("charchallenge");
-	if ( _isUserLoggedIn() ) {
-		
+	if ( _isUserLoggedIn() ) {		
 		if( defined ( $charactertochallenge ) and $charactertochallenge ne "") {
 			my $opponent = new GrayscalePerspective::Character();
 			$opponent->setName( $charactertochallenge );
 			$opponent->loadFromName();
-			
+
 			my $user = _getLoggedInUser();
 			$user->load();
 			
 			my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($user->getCharacter(), $opponent);
 
-			if( defined ( $battleid ) ) {
+			if( defined ( $battleid ) and int( $battleid ) != 0 ) {
 				_saveSessionParam('battleid', $battleid);
 				_saveSessionParam('opponent', $opponent);
+				print 1;
+			}
+			else {
+				print $battleid;
 			}
 		}
-	}
+	}	
 }
 
 ############################

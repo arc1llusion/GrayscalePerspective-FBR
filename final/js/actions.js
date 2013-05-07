@@ -235,7 +235,7 @@ function Challenge(callback) {
 		charchallenge: v_challengeCharacter
 	}, function(data, status) {		
 		if(typeof(callback) == 'function') {
-			callback();
+			callback(data, status);
 		}
 	});
 }
@@ -254,13 +254,23 @@ function Attack(callback) {
 	});
 }
 
+function showSuccessMessageDefault(message) {
+	showSuccessMessage( '#sysmessage', message );
+}
+
+function showErrorMessageDefault(message) {
+	showErrorMessage( '#sysmessage', message );
+}
+
 function showSuccessMessage(e, message) {
+	$(e).removeClass("error");
 	$(e).addClass("success");
 	$(e).css("display", "block");
 	$(e).html(message);
 }
 
 function showErrorMessage(e, message) {
+	$(e).removeClass("success");
 	$(e).addClass("error");
 	$(e).css("display", "block");
 	$(e).html(message);

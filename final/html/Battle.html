@@ -26,9 +26,19 @@
 				}
 				else {
 					$("#gs_character_challenge_submit").on("click", function() {
-						Challenge(function() {
-							location.reload(true);
-						});
+						var character_name = $('#gs_character_challenge').val();
+						if( character_name != "" ) {
+							Challenge(function(data, status) {
+								if( data != "1" ) {
+									showErrorMessageDefault(data);
+									return;
+								}
+								location.reload(true);
+							});
+						}
+						else {
+							showErrorMessageDefault( "Character name cannot be empty!" );
+						}
 					});					
 				}
 			});

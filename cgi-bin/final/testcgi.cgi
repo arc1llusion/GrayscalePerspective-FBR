@@ -109,17 +109,12 @@ db_connect();
 #print GrayscalePerspective::Battle::Service::initiateBattle(1, 1);
 #print GrayscalePerspective::Battle::Service::initiateBattle(1, 2);
 
+my $opponent = new GrayscalePerspective::Character();
+			$opponent->setName( "fddsfsd" );
+			$opponent->loadFromName();
+			if ( not defined $opponent->getId() ) {
+				
+				print "getting here";
+			}	
 
-my $charobj = new GrayscalePerspective::Character( 1, 1 );
-my $charobj2 = new GrayscalePerspective::Character( 2, 1 );
-my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($charobj, $charobj2);
-
-print $battleid;
-if ( defined ( $battleid ) ) {
-	my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid, $charobj, $charobj2 );
-	
-	foreach $log (@{$logs}) {
-		print %{$log};
-	}
-}
 

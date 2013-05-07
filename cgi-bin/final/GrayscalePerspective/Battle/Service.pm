@@ -68,7 +68,11 @@ sub initiateBattle {
 	my $challenged = $_[1];
 	my $battleid;
 	
-	if($challenger == $challenged) {
+	if ( not defined ( $challenged ) or not defined ( $challenged->getId() ) ) {
+		return "The opponent you challenged does not exist in this world.";
+	}
+	
+	if($challenger->getName() eq $challenged->getName() ) {
 		return "You cannot challenge yourself!"; 
 	}
 	
@@ -93,7 +97,7 @@ sub initiateBattle {
 		return $battleid;
 	}
 	
-	return undef;
+	return "You or your opponent does not have the strength to enter a battle right now.";
 }
 
 # doesCharacterHaveActiveBattle() - Checks to see if a character is already in battle. It checks the database if the character is in a battle with

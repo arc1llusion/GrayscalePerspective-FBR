@@ -14,9 +14,16 @@
 		function loadFlashcards() {
 			GetHTMLTemplate( {action: "getflashcards", deckid: queryObj()["deckid"] }, $('#body'), true, function() {
 				$("#gs_createfc_submit").on("click", function() {
-					CreateFlashcard(true, $('#sysmessage'), function() {
-						loadFlashcards();
-					});
+					var question = $('#gs_question').val();
+					var answer = $('#gs_answer').val();
+					if( question != "" && answer != "" ) {
+						CreateFlashcard(true, $('#sysmessage'), function() {
+							loadFlashcards();
+						});
+					}
+					else {
+						showErrorMessageDefault( "Question or Answer cannot be empty!");
+					}
 				});
 				
 				$("#gs_start_quiz").on("click", function() {
