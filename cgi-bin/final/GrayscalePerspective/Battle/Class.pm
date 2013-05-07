@@ -6,6 +6,7 @@
 package GrayscalePerspective::Class;
 
 use GrayscalePerspective::DAL;
+use GrayscalePerspective::Battle::Skill;
 
 sub new
 {
@@ -14,7 +15,7 @@ sub new
         _id          => shift,
 		_title       => undef,
 		_description => undef,
-		_skillhash   => undef
+		_skills      => undef
     };
 	
 	my $loadImmediate = shift;
@@ -55,14 +56,19 @@ sub loadClassSkills {
 	if ( defined ( $self->{_id} ) ) {
 		my @params = ( $self->{_id} );
 		my @skills = @{GrayscalePerspective::DAL::execute_table_arrayref("SELECT * FROM Battle_Skill WHERE ClassId = ?", \@params)};
+		my @skillref = ();
 		
 		my $skillhash = {};
 		
 		foreach $skill (@skills) {
-			$skillhash->{ $skill->{Name} } = $skill->{Formula};
+			my $skillobj = new GrayscalePerspective::Skill();
+			$skillobj->loadFromHashRef( $skill );			
+			push(@skillref, $skillobj);
+			
+			$skillhash->{ $skill->{Name} } = $skillobj;
 		}
 		
-		$self->{_skillhash} = $skillhash;
+		$self->{_skills} = $skillhash;
 	}
 }
 
@@ -93,14 +99,19 @@ sub getDescription {
 	return $self->{_description};
 }
 
-sub getSkillHash {
-	my ( $self ) = @_;
-	return $self->{_skillhash};
+sub getSkillObject {
+	my ( $self, $skillname ) = @_;
+	return $self->{_skills}->{$skillname};
 }
 
 sub getSkillFormula {
 	my ( $self, $skillname ) = @_;
-	return $self->{_skillhash}->{$skillname};
+	return $self->{_skills}->{$skillname}->getFormula();
+}
+
+sub getSkillHash {
+	my ( $self ) = @_;
+	return $self->{_skills};
 }
 
 1;

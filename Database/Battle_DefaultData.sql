@@ -6,9 +6,13 @@ INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (
 INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (3, 'Rogue', 'A character representing strength in stealth. Prefers being a lone wolf, rather than part of a group.');
 
 -- Skill Data
-INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (1, 1, 'Attack', '[P_STR]-[O_DEF]');
-INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (2, 2, 'Attack', '[P_MAG]-[O_MDEF]');
-INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (3, 3, 'Attack', '([P_STR]+[P_DEX])-([O_DEF]-[O_MDEF])');
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`, `MP`, `Accuracy`) VALUES (1, 1, 'Attack', '[P_STR]-[O_DEF]', 0, 100);
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`, `MP`, `Accuracy`) VALUES (2, 2, 'Attack', '[P_MAG]-[O_MDEF]', 0, 100);
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`, `MP`, `Accuracy`) VALUES (3, 3, 'Attack', '([P_STR]+[P_DEX])-([O_DEF]-[O_MDEF])', 0, 100);
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`, `MP`, `Accuracy`) VALUES (4, 1, 'Brutal Swing', '([P_STR]*2)-[O_DEF]', 0, 45);
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`, `MP`, `Accuracy`) VALUES (5, 2, 'Fireball', '([P_MAG]*2)-[O_MDEF]', 3, 90);
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`, `MP`, `Accuracy`) VALUES (6, 3, 'Silent Stab', '([P_STR]+[P_DEX]*2)-([O_DEF]-[O_MDEF])', 8, 100);
+
 
 -- Stat Data
 

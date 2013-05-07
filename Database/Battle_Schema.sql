@@ -26,6 +26,8 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Skill` (
   `ClassId` INT NOT NULL ,
   `Name` VARCHAR(45) NOT NULL ,
   `Formula` VARCHAR(255) NOT NULL ,
+  `MP` INT NOT NULL DEFAULT 0 ,
+  `Accuracy` INT NOT NULL DEFAULT 100 ,
   PRIMARY KEY (`Id`) ,
   INDEX `fk_Class_Skill_idx` (`ClassId` ASC) ,
   CONSTRAINT `fk_Class_Skill`
