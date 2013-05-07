@@ -137,6 +137,7 @@ sub takeTurn {
 		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)", \@params);
 		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
 			#initiate turn			
+			$character->load();
 			my $physicaldamage = _getPhysicalDamage( $character, $opponent );
 			my $magicaldamage = _getMagicalDamage( $character, $opponent );
 			my $criticalhit = _getCriticalHitModifier( $character );
