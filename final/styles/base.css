@@ -307,7 +307,8 @@ div.create-flashcard {
 	padding: 20px 0 25px 0;
 }
 
-    div.deck-list h2, div.flashcards h2, div.quiz h2, div.battle h2, div.create-deck h2, div.create-flashcard h2, div.take-quiz h2, div.login h2 {
+    div.deck-list h2, div.flashcards h2, div.quiz h2, div.battle h2, div.create-deck h2, 
+	div.create-flashcard h2, div.take-quiz h2, div.login h2, div.invalid-content h2 {
         margin-bottom: 20px;
     }
 
