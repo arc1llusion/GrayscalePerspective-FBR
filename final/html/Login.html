@@ -9,10 +9,10 @@
 		$(document).ready(function() {
 			GetHTMLTemplate( {action: "getlogin"}, $('#body'), true, function() {
 				$("#gs_register").on("click", function() {
-					RegisterUser( true, $(".login") );
+					RegisterUser( true, $("#sysmessage") );
 				});
 				$("#gs_login").on("click", function() {
-					LogIn( false, $(".login") );
+					LogIn( false, $("#sysmessage") );
 				});	
 			});			
 			

@@ -47,7 +47,7 @@ function RegisterUser(showLoader, result) {
 		v_error += "Email is invalid. Should be in the format of somename@email.com";
 	
 	if(v_error != "") {
-		$(result).html(v_error);
+		showErrorMessage(result, v_error);
 		return;
 	}
 	
@@ -67,11 +67,11 @@ function RegisterUser(showLoader, result) {
 		classid: v_classid
 	}, 
 	function(data, status) {
-		var resulttext = "Invalid username and password.";
+		var resulttext = "There was an error registering. Please try again later.";
 		if(data == "1")
-			resulttext = "You've registered! Try logging in!";			
-			
-		$(result).text(resulttext);
+			showSuccessMessage(result, "You've registered! Try logging in!");
+		else 
+			showErrorMessage(result, resulttext);
 	});
 }
 
