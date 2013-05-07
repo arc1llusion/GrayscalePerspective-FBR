@@ -148,8 +148,7 @@ sub takeTurn {
 	my $opponent  = $_[2];
 	my $message   = $_[3];
 	
-	#First check if the given character can execute a turn.
-	
+	#First check if the given character can execute a turn.	
 	my $status = _checkBattleStatus( $battleid );
 	
 	if( defined ( $status ) and $status != 1 ) {
@@ -162,7 +161,7 @@ sub takeTurn {
 			my $magicaldamage = _getMagicalDamage( $character, $opponent );
 			my $criticalhit = _getCriticalHitModifier( $character );
 			
-			my $damage = ($physicaldamage + $magicaldamage) * $criticalhit;
+			my $damage = (_getDamage($character, $opponent, "Attack")) * $criticalhit;
 			
 			$opponent->getStatCollection()->getStat("HP")->damage($damage);
 			$opponent->save();
@@ -417,6 +416,30 @@ sub _checkBattleStatus {
 	my $battle_in_progress = GrayscalePerspective::DAL::execute_scalar("SELECT Status FROM Battle_Active WHERE Id = ?", \@params);
 	
 	return $battle_in_progress;
+}
+
+sub _getDamage {
+	my $character = $_[0];
+	my $opponent  = $_[1];
+	my $skill     = $_[2];
+	
+	my $damage;
+	my $formula  = $character->getClass()->getSkillFormula($skill);
+	my %stathash = %{$character->getStatCollection()->getStatHash()};
+	my %oppstathash = %{$opponent->getStatCollection()->getStatHash()};
+	
+	while ( my ( $key, $value) = each %stathash ) {
+		my $statvalue = $value->getCurrentValue();
+		my $oppstatvalue = $oppstathash{$key}->getCurrentValue();
+		
+		my $keyreplace = "[P_$key]";
+		my $oppkeyreplace = "[O_$key]";
+		$formula =~ s/\Q$keyreplace/$statvalue/g;
+		$formula =~ s/\Q$oppkeyreplace/$oppstatvalue/g;
+	}
+	
+	$damage = eval $formula;
+	return $damage;
 }
 
 # _getPhysicalDamage() - Gets the amount of physical damage done by the attacker.

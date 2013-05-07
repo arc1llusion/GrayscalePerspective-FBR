@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS Battle_ObjectStatValue;
 DROP TABLE IF EXISTS Battle_Stat;
 DROP TABLE IF EXISTS Battle_ObjectType;
 DROP TABLE IF EXISTS UserCharacterMapping;
+DROP TABLE IF EXISTS Battle_Skill;
 DROP TABLE IF EXISTS Battle_Character;
 DROP TABLE IF EXISTS Battle_Class;
 
@@ -24,7 +25,7 @@ CREATE  TABLE IF NOT EXISTS `jgerma08_db`.`Battle_Skill` (
   `Id` INT NOT NULL AUTO_INCREMENT ,
   `ClassId` INT NOT NULL ,
   `Name` VARCHAR(45) NOT NULL ,
-  `Formula` VARCHAR(45) NOT NULL ,
+  `Formula` VARCHAR(255) NOT NULL ,
   PRIMARY KEY (`Id`) ,
   INDEX `fk_Class_Skill_idx` (`ClassId` ASC) ,
   CONSTRAINT `fk_Class_Skill`

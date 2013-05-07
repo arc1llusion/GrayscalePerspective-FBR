@@ -6,9 +6,9 @@ INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (
 INSERT INTO `jgerma08_db`.`Battle_Class` (`Id`, `Title`, `Description`) VALUES (3, 'Rogue', 'A character representing strength in stealth. Prefers being a lone wolf, rather than part of a group.');
 
 -- Skill Data
-INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (1, 1, 'Attack', '[STR]-[DEF]');
-INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (2, 2, 'Attack', '[MAG]-[MDEF]');
-INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (3, 3, 'Attack', '([STR]+[DEX])-([DEF]-[MDEF])');
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (1, 1, 'Attack', '[P_STR]-[O_DEF]');
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (2, 2, 'Attack', '[P_MAG]-[O_MDEF]');
+INSERT INTO `jgerma08_db`.`Battle_Skill` (`Id`, `ClassId`, `Name`, `Formula`) VALUES (3, 3, 'Attack', '([P_STR]+[P_DEX])-([O_DEF]-[O_MDEF])');
 
 -- Stat Data
 
