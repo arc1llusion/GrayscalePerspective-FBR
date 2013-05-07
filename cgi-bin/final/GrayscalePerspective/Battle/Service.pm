@@ -157,26 +157,40 @@ sub takeTurn {
 		my @params = ( $battleid );
 		my $lastcharacteraction = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetLastCharacterIdAction(?)", \@params);
 		if ( defined ( $lastcharacteraction ) and $lastcharacteraction != $character->getId() ) {
-			#initiate turn			
 			$character->load();
-			my $criticalhit = _getCriticalHitModifier( $character );
+			$opponent->load();
+			my $mpneeded = $character->getClass()->getSkillObject($skill)->getMP();
+			my $charactermp = $character->getStatCollection()->getStat("MP")->getCurrentValue();
 			
-			my $damage = (_getDamage($character, $opponent, $skill)) * $criticalhit;
-			
-			$opponent->getStatCollection()->getStat("HP")->damage($damage);
-			$opponent->save();
-			
-			my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit, $skill );
-			
-			_saveBattleLog($battleid, $character->getId(), $actionmessage, $character->getName() . " says $message" );			
-			_checkBattleParameters($battleid, $character, $opponent);
+			#Don't do anything if the character doesn't have the MP to use it.
+			if ( $charactermp >= $mpneeded ) {
+				my $criticalhit = _getCriticalHitModifier( $character );
+				
+				my $damage = (_getDamage($character, $opponent, $skill)) * $criticalhit;
+				
+				$opponent->getStatCollection()->getStat("HP")->damage($damage);
+				$opponent->save();
+				
+				$character->getStatCollection()->getStat("MP")->damage($mpneeded);
+				$character->save();
+				
+				my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit, $skill );
+				
+				_saveBattleLog($battleid, $character->getId(), $actionmessage, $character->getName() . " says $message" );			
+				_checkBattleParameters($battleid, $character, $opponent);
+				
+				return 1;
+			}
+			else {
+				return "You don't have the MP to use this skill.";
+			}
 		}
 		else {
-			print "You already took your turn! No Cheating!";
+			return "You already took your turn! No Cheating!";
 		}
 	}
 	else {
-		print "This battle is already completed: $battleid ";
+		return "This battle is already completed: $battleid ";
 	}
 }
 

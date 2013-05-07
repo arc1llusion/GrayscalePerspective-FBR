@@ -367,7 +367,7 @@ sub Attack {
 	my $message = param('message');
 	my $skill = param('skill');
 	
-	GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message, $skill);
+	print GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message, $skill);
 }
 
 sub IssueChallenge {
