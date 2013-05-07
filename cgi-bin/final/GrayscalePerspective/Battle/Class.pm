@@ -93,6 +93,11 @@ sub getDescription {
 	return $self->{_description};
 }
 
+sub getSkillHash {
+	my ( $self ) = @_;
+	return $self->{_skillhash};
+}
+
 sub getSkillFormula {
 	my ( $self, $skillname ) = @_;
 	return $self->{_skillhash}->{$skillname};

@@ -341,10 +341,12 @@ sub GetBattleTemplate {
 			$template->param(BATTLE_ID => $battleid);
 			
 			my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid );
+			my $attacks = _getAttackHash($character);			
 			
 			_saveSessionParam('battleid', $battleid);
 			_saveSessionParam('opponent', $opponent);
 			
+			$template->param(ATTACK_LOOP => $attacks);
 			$template->param(MESSAGE_LOOP => $logs);
 		}
 	}
@@ -363,8 +365,9 @@ sub Attack {
 	my $character = _getLoggedInUser()->getCharacter();
 	my $opponent = _getSessionParam('opponent');
 	my $message = param('message');
+	my $skill = param('skill');
 	
-	GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message);
+	GrayscalePerspective::Battle::Service::takeTurn($battleid, $character, $opponent, $message, $skill);
 }
 
 sub IssueChallenge {
@@ -525,6 +528,21 @@ sub _getBattleClassArrayRef {
 		push(@classref, \%classhash);
 	}
 	return \@classref;
+}
+
+sub _getAttackHash {
+	my $character = $_[0];
+	my %skillhash = %{$character->getClass()->getSkillHash()};
+	my @skills = ();
+	
+	
+	while ( my ( $key, $value) = each %skillhash ) {
+		my %hashtemplate;
+		$hashtemplate{AT_NAME} = $key;
+		push(@skills, \%hashtemplate);
+	}
+	
+	return \@skills;
 }
 
 sub _saveCharacterToTemplate {

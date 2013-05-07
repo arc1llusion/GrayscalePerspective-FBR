@@ -139,7 +139,8 @@ sub doEitherCharactersHaveActiveBattle {
 # $_[0] = Battle Id - The id of the battle to initiate the turn.
 # $_[1] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
 # $_[2] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
-# $_[4] = Message - The message sent by the attacker. Will be added to the battle log.
+# $_[3] = Message - The message sent by the attacker. Will be added to the battle log.
+# $_[4] = Skill - The name of the skill to use.
 #
 # Does not return any value.
 sub takeTurn {
@@ -147,6 +148,7 @@ sub takeTurn {
 	my $character = $_[1];
 	my $opponent  = $_[2];
 	my $message   = $_[3];
+	my $skill     = $_[4];
 	
 	#First check if the given character can execute a turn.	
 	my $status = _checkBattleStatus( $battleid );
@@ -159,7 +161,7 @@ sub takeTurn {
 			$character->load();
 			my $criticalhit = _getCriticalHitModifier( $character );
 			
-			my $damage = (_getDamage($character, $opponent, "Attack")) * $criticalhit;
+			my $damage = (_getDamage($character, $opponent, $skill)) * $criticalhit;
 			
 			$opponent->getStatCollection()->getStat("HP")->damage($damage);
 			$opponent->save();

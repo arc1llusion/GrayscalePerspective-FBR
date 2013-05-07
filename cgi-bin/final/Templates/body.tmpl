@@ -347,9 +347,9 @@
 							<label>Attack Type:</label>
 							<div class="form-value">
 								<select id="ddlAttackType">
-									<option>Option 1</option>
-									<option>Option 2</option>
-									<option>Option 3</option>
+									<TMPL_LOOP NAME="ATTACK_LOOP">
+												<option value="<TMPL_VAR NAME=AT_NAME>"><TMPL_VAR NAME=AT_NAME></option>
+									</TMPL_LOOP>
 								</select>
 							</div>
 						</div>
