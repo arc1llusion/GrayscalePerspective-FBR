@@ -226,7 +226,7 @@ function GetHTMLTemplate(data, output, showLoader, callback) {
 	});
 }
 
-function Challenge() {
+function Challenge(callback) {
 	var v_challengeCharacter = $("#gs_character_challenge").val();
 	
 	$.post(actionUrl, 

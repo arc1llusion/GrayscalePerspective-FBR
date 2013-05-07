@@ -26,7 +26,9 @@
 				}
 				else {
 					$("#gs_character_challenge_submit").on("click", function() {
-						Challenge();
+						Challenge(function() {
+							location.reload(true);
+						});
 					});					
 				}
 			});
