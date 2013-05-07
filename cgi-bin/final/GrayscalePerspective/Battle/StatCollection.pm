@@ -58,13 +58,13 @@ sub saveCurrentValuesToHashRef {
 	
 		if ( defined $hashref and ( ref ( $hashref ) eq "HASH" ) ) {
 			
-			$hashref->{HP} = $self->{_hp}->getCurrentValue();
-			$hashref->{MP} = $self->{_mp}->getCurrentValue();
-			$hashref->{STR} = $self->{_str}->getCurrentValue();
-			$hashref->{DEF} = $self->{_def}->getCurrentValue();
-			$hashref->{MAG} = $self->{_mag}->getCurrentValue();
-			$hashref->{MDEF} = $self->{_mdef}->getCurrentValue();
-			$hashref->{DEX} = $self->{_dex}->getCurrentValue();
+			$hashref->{HP} = $self->getStat("HP")->getCurrentValue();
+			$hashref->{MP} = $self->getStat("MP")->getCurrentValue();
+			$hashref->{STR} = $self->getStat("STR")->getCurrentValue();
+			$hashref->{DEF} = $self->getStat("DEF")->getCurrentValue();
+			$hashref->{MAG} = $self->getStat("MAG")->getCurrentValue();
+			$hashref->{MDEF} = $self->getStat("MDEF")->getCurrentValue();
+			$hashref->{DEX} = $self->getStat("DEX")->getCurrentValue();
 			
 			return $hashref;
 		}
@@ -74,6 +74,11 @@ sub saveCurrentValuesToHashRef {
 sub getStat {
 	my ( $self, $statname ) = @_;
 	return $self->{_stathash}->{$statname};
+}
+
+sub getStatHash {
+	my ( $self ) = @_;
+	return $self->{_stathash};
 }
 
 1;
