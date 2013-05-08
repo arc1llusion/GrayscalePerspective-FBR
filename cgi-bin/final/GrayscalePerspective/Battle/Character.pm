@@ -200,6 +200,12 @@ sub switchClassById {
 	my ( $self, $classid ) = @_; 
 }
 
+#This is meant to be a short hand so that we don't have an endless chain of objects
+sub getStat() {
+	my ( $self, $statname ) = @_;
+	return $self->{_statcollection}->getStat( $statname );
+}
+
 sub isHealthZero {
 	my ( $self ) = @_;
 	if ( $self->getStatCollection()->getStat("HP")->getCurrentValue() <= 0 ) {

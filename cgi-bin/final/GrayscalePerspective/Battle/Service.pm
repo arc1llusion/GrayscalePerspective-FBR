@@ -19,6 +19,17 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEitherCharactersHaveActiveBattle takeTurn getOpponentCharacterObject getBattleLog);
 
 my ( $Battle_Completed, $Battle_Initiated, $Battle_InProgress, $Battle_Denied ) = (1, 2, 3, 4);
+my ( $image_path );
+
+sub setImagePath {
+	$image_path = $_[0];
+}
+
+sub getCharacterImage {
+	my $character = $_[0];
+	
+	return $image_path . "male" . lc ( $character->getClass()->getTitle() ) . ".png";
+}
 
 # getAllClasses() - Gets all the Battle Classes in the system.
 #
@@ -515,3 +526,5 @@ sub _generateActionMessage {
 
 	return $message;
 }
+
+1;

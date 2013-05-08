@@ -6,6 +6,7 @@ use warnings;
 use CGI qw(:standard -debug);
 use CGI::Session;
 use HTML::Template;
+use POSIX;
 
 #GS Modules
 use GrayscalePerspective::Person;
@@ -18,7 +19,9 @@ use GrayscalePerspective::Flashcards::FlashcardService;
 
 use GrayscalePerspective::Battle::Service;
 use GrayscalePerspective::Battle::Character;
+
 GrayscalePerspective::DAL::db_connect();
+GrayscalePerspective::Battle::Service::setImagePath("https://crux.baker.edu/~jgerma08/final/images/battle/");
 
 my $cgi = new CGI;
 #print $cgi->header; Let individual methods print the header
@@ -206,6 +209,7 @@ sub CheckFlashcardAnswer {
 		print 1;		
 		$quizhash{FC_TOTALPOINTS} = $quizhash{FC_TOTALPOINTS} + $points;
 		$quizhash{FC_TOTALCORRECT} = $quizhash{FC_TOTALCORRECT} + 1;
+		_onCorrectFlashcardAnswer( _getLoggedInUser()->getCharacter() );
 	}
 	else {
 		print 0;
@@ -550,12 +554,27 @@ sub _saveCharacterToTemplate {
 	my $character    = $_[1];
 	my $prefix       = $_[2];
 	
+	$template->param($prefix . "_IMAGE_SRC" => GrayscalePerspective::Battle::Service::getCharacterImage($character) );
 	$template->param($prefix . "_NAME" => $character->getName());
 	$template->param($prefix . "_CLASS_NAME" => $character->getClass()->getTitle());
 	$template->param($prefix . "_LEVEL" => $character->getLevel());
-	$template->param($prefix . "_HEALTH" => $character->getStatCollection()->getStat("HP")->getCurrentValue());
-	$template->param($prefix . "_MP" => $character->getStatCollection()->getStat("MP")->getCurrentValue());
+	$template->param($prefix . "_HEALTH" => $character->getStat("HP")->getCurrentValue());
+	$template->param($prefix . "_MP" => $character->getStat("MP")->getCurrentValue());
 	$template->param($prefix . "_EXP" => $character->getEXP());
+}
+
+sub _onCorrectFlashcardAnswer {
+	my $character = $_[0];
+	
+	$character->load();
+	
+	my $healhpamount = ceil ($character->getStat("HP")->getMaximumValue() / 100 );
+	$character->getStat("HP")->heal($healhpamount);
+	
+	my $healmpamount = ceil ($character->getStat("MP")->getMaximumValue() / 100 );
+	$character->getStat("MP")->heal($healhpamount);
+	
+	$character->save();
 }
 
 sub _saveQuizHashToTemplate {
