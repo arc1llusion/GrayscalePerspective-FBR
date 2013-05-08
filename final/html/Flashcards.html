@@ -9,6 +9,12 @@
 		$(document).ready(function() {
 			loadFlashcards();
 			ShowHideLoginLogoutLink();
+			$(body).on("keydown", function(event) {
+				if(event.which == 13 ) {
+					event.preventDefault();
+					$("#gs_createfc_submit").click();
+				}
+			});
 		});
 	
 		function loadFlashcards() {

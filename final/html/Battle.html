@@ -11,7 +11,17 @@
 		$(document).ready(function() {
 			loadBattle();
 			ShowHideLoginLogoutLink();
-			
+			$(body).on("keydown", function(event) {
+				if(event.which == 13 ) {
+					event.preventDefault();
+					if( $("#battleid").length ) {
+						$("#btnAttack").click();
+					}
+					else {
+						$('#gs_character_challenge_submit').click();
+					}
+				}
+			});
 		});
 		
 		function loadBattle() {

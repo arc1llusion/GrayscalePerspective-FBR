@@ -9,6 +9,12 @@
 		$(document).ready(function() {
 			loadDeckListing();
 			ShowHideLoginLogoutLink();
+			$(body).on("keydown", function(event) {
+				if(event.which == 13 ) {
+					event.preventDefault();
+					$("#gs_createdeck_submit").click();
+				}
+			});
 		});
 	
 		function loadDeckListing() {

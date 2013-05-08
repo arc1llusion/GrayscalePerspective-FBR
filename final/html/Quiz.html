@@ -7,9 +7,15 @@
 	<script src="../js/global.js" type="text/javascript"></script>
 	<script type="text/javascript"> 
 		$(document).ready(function() {
-			loadQuiz( queryObj()["deckid"] );
-			
+			loadQuiz( queryObj()["deckid"] );			
 			ShowHideLoginLogoutLink();
+			
+			$(body).on("keydown", function(event) {
+				if(event.which == 13 ) {
+					event.preventDefault();
+					$("#gs_quiz_submit").click();
+				}
+			});
 		});
 		
 		function loadQuiz(deckIdParam, cardIdParam) {
