@@ -89,7 +89,7 @@ sub initiateBattle {
 	my $challenged = $_[1];
 	my $battleid;
 	
-	if ( not defined ( $challenged ) and not defined ( $challenged->getId() ) ) {
+	if ( not defined ( $challenged ) or not defined ( $challenged->getId() ) ) {
 		return "The opponent you challenged does not exist in this world.";
 	}
 	
