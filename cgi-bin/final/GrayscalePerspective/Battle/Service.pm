@@ -187,15 +187,18 @@ sub takeTurn {
 			if ( $charactermp >= $mpneeded ) {
 				my $criticalhit = _getCriticalHitModifier( $character );
 				
-				my $damage = (_getDamage($character, $opponent, $skill)) * $criticalhit;
+				my $damage = (_getDamage($character, $opponent, $skill)) * $criticalhit;				
+				my $missed = _didAttackHit( $character, $skill );
 				
-				$opponent->getStatCollection()->getStat("HP")->damage($damage);
+				if ( $missed == 1 ) {
+					$opponent->getStatCollection()->getStat("HP")->damage($damage);
+				}
 				$opponent->save();
 				
 				$character->getStatCollection()->getStat("MP")->damage($mpneeded);
 				$character->save();
 				
-				my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit, $skill );
+				my $actionmessage = _generateActionMessage( $character, $opponent, $damage, $criticalhit, $skill, $missed );
 				
 				_saveBattleLog($battleid, $character->getId(), $actionmessage, $character->getName() . " says $message" );			
 				_checkBattleParameters($battleid, $character, $opponent);
@@ -482,12 +485,29 @@ sub _getCriticalHitModifier {
 	return 1;
 }
 
+sub _didAttackHit {
+	my $character = $_[0];
+	my $skill     = $_[1];
+	
+	my $accuracy = $character->getClass()->getSkillObject($skill)->getAccuracy() / 100;
+	
+	my $n = rand();
+	
+	if ( $n <= $accuracy ) {
+		return 1;
+	}
+	
+	return 0;
+}
+
 # _getCriticalHitModifier() - Generates the action message for the battle log. Bases itself on the damage, characters, and whether or not it was a critical hit.
 #
 # $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
 # $_[1] = Opponent - The character on the receiving end of the attack. It must be an object, not an id of a character.
 # $_[2] = Damage - The damage done by the character in this turn.
 # $_[3] = ch - The critical hit modifier. If it's 1, then there was no critical hit.
+# $_[4] = skill - the skill being used by the character.
+# $_[5] = missed - a boolean value indicating whether or not the character missed.
 #
 # Returns the joined message based on the given parameters.
 sub _generateActionMessage {
@@ -496,12 +516,18 @@ sub _generateActionMessage {
 	my $damage    = $_[2];
 	my $ch        = $_[3];
 	my $skill     = $_[4];
+	my $missed    = $_[5];
 	my $message = "";
 	
-	if ( $ch != 1 ) {
-		$message = "Critical Hit! ";
+	if ( $missed == 1 ) {
+		if ( $ch != 1 ) {
+			$message = "Critical Hit! ";
+		}
+		$message = ( $message || "") . $character->getName() . " used $skill and did $damage points of damage to " . $opponent->getName();
 	}
-	$message = ( $message || "") . $character->getName() . " used $skill and did $damage points of damage to " . $opponent->getName();
+	else {
+		$message = $character->getName() . " used $skill and missed!";
+	}
 
 	return $message;
 }
