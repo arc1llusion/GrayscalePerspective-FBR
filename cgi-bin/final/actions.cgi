@@ -394,6 +394,8 @@ sub IssueChallenge {
 	my $charactertochallenge = param("charchallenge");
 	if ( _isUserLoggedIn() ) {		
 		if( defined ( $charactertochallenge ) and $charactertochallenge ne "") {
+			$charactertochallenge =~ s/^\s+//;
+			$charactertochallenge =~ s/\s+$//;	
 			my $opponent = new GrayscalePerspective::Character();
 			$opponent->setName( $charactertochallenge );
 			$opponent->loadFromName();
