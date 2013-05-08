@@ -249,6 +249,7 @@ function Attack(callback) {
 		skill: $('#ddlAttackType').val(),
 		message: v_message
 	}, function(data, status) {
+		hideSysMessageDefault();
 		if(data != "1") {
 			showErrorMessageDefault(data);
 		}
@@ -280,6 +281,10 @@ function showErrorMessage(e, message) {
 	$(e).addClass("error");
 	$(e).css("display", "block");
 	$(e).html(message);
+}
+
+function hideSysMessageDefault() {
+	hideSysMessage( '#sysmessage' );
 }
 
 function hideSysMessage(e) {
