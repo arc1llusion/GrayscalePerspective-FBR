@@ -325,39 +325,52 @@ sub GetQuizTemplate {
 sub GetBattleTemplate {
 	my $template = HTML::Template->new(filename => 'Templates/body.tmpl');
 	$template->param(BATTLE_CONTENT => 1);
-	$template->param(LOGGED_IN => _isUserLoggedIn() );
 	
 	print $cgi->header;
-	
+
 	if ( _isUserLoggedIn() ) {
+		$template->param(LOGGED_IN => 1 );
 		my $user = _getLoggedInUser();
 		$user->load();
 		
-		my $hasActiveBattle = GrayscalePerspective::Battle::Service::doesCharacterHaveActiveBattle( $user->getCharacter()->getId() );
-		$template->param(IN_BATTLE => $hasActiveBattle );
+		my $battleid = param('battleid') || GrayscalePerspective::Battle::Service::doesCharacterHaveActiveBattle( $user->getCharacter()->getId() );
 		
-		if( $hasActiveBattle ) {		
-			my $character = $user->getCharacter();
-			my $opponent = GrayscalePerspective::Battle::Service::getOpponentCharacterObject( $character->getId() );
-			
-			_saveCharacterToTemplate( $template, $character, "CHARACTER");
-			_saveCharacterToTemplate( $template, $opponent, "OPPONENT");
-			
-			my $battleid = GrayscalePerspective::Battle::Service::initiateBattle($character, $opponent);
-			$template->param(BATTLE_ID => $battleid);
-			
-			my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid );
-			my $attacks = _getAttackHash($character);			
-			
-			_saveSessionParam('battleid', $battleid);
-			_saveSessionParam('opponent', $opponent);
-			
-			$template->param(ATTACK_LOOP => $attacks);
-			$template->param(MESSAGE_LOOP => $logs);
+		if ( defined ( $battleid ) ) {
+			_saveBattleToTemplate( $template, $battleid, $user ); 
+		}
+		else {
+			$template->param(IN_BATTLE => 0 );
 		}
 	}
 	
 	print $template->output;
+}
+
+sub _saveBattleToTemplate {
+	my $template = $_[0];
+	my $battleid = $_[1];
+	my $user     = $_[2];
+	
+	$template->param(BATTLE_ID => $battleid);
+	$template->param(IN_BATTLE => 1 );
+	
+	my $character = $user->getCharacter();
+	my $opponent = GrayscalePerspective::Battle::Service::getOpponentCharacterObject( $battleid, $character->getId() );
+	
+	$battleid = $battleid || GrayscalePerspective::Battle::Service::initiateBattle($character, $opponent);
+	
+	_saveCharacterToTemplate( $template, $character, "CHARACTER");
+	_saveCharacterToTemplate( $template, $opponent, "OPPONENT");
+	
+	my $logs = GrayscalePerspective::Battle::Service::getBattleLog( $battleid );
+	my $attacks = _getAttackHash($character);			
+	
+	_saveSessionParam('battleid', $battleid);
+	_saveSessionParam('opponent', $opponent);
+	
+	$template->param(ATTACK_LOOP => $attacks);
+	$template->param(MESSAGE_LOOP => $logs);
+	$template->param(BATTLE_COMPLETE => int ( GrayscalePerspective::Battle::Service::checkBattleStatus( $battleid ) ) );
 }
 
 ############################

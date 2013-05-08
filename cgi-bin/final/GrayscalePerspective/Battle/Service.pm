@@ -89,7 +89,7 @@ sub initiateBattle {
 	my $challenged = $_[1];
 	my $battleid;
 	
-	if ( not defined ( $challenged ) or not defined ( $challenged->getId() ) ) {
+	if ( not defined ( $challenged ) and not defined ( $challenged->getId() ) ) {
 		return "The opponent you challenged does not exist in this world.";
 	}
 	
@@ -131,8 +131,8 @@ sub doesCharacterHaveActiveBattle {
 	my $singlecharacter = $_[0];
 	
 	my @params = ( $singlecharacter, $singlecharacter, $Battle_Completed );
-	my $result = GrayscalePerspective::DAL::execute_single_row_hashref("SELECT 1 ActiveBattle FROM Battle_Active WHERE (Challenger = ? or Challenged = ?) AND Status <> ?", \@params);
-	return _checkActiveBattleHash($result);
+	my $result = GrayscalePerspective::DAL::execute_scalar("SELECT Id ActiveBattle FROM Battle_Active WHERE (Challenger = ? or Challenged = ?) AND Status <> ?", \@params);
+	return $result;
 }
 
 # doesCharacterHaveActiveBattle() - Checks to see if a character is already in battle. It checks the database if the character is in a battle with
@@ -172,7 +172,7 @@ sub takeTurn {
 	my $skill     = $_[4];
 	
 	#First check if the given character can execute a turn.	
-	my $status = _checkBattleStatus( $battleid );
+	my $status = checkBattleStatus( $battleid );
 	
 	if( defined ( $status ) and $status != 1 ) {
 		my @params = ( $battleid );
@@ -221,10 +221,11 @@ sub takeTurn {
 #
 # Returns the id of the character representing the opponent if it succeeds, otherwise it returns 0
 sub getOpponentCharacterObject {
-	my $characterid = $_[0];
+	my $battleid    = $_[0];
+	my $characterid = $_[1];
 	
-	my @params = ( $characterid );
-	my $opponentid = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetOpponent(?)", \@params);
+	my @params = ( $battleid, $characterid );
+	my $opponentid = GrayscalePerspective::DAL::execute_scalar("SELECT Battle_GetOpponent(?,?)", \@params);
 	
 	if( defined ( $opponentid ) ) {
 		my $opponentobject = new GrayscalePerspective::Character( $opponentid, 1 );
@@ -412,7 +413,7 @@ sub _checkBattleParameters {
 # $_[0] = Battle Id - The id of the battle to update.
 #
 # Returns the status of the battle.
-sub _checkBattleStatus {
+sub checkBattleStatus {
 	my $battleid       = $_[0];
 	
 	my @params = ( $battleid );

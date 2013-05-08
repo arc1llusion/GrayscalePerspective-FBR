@@ -15,11 +15,15 @@
 		});
 		
 		function loadBattle() {
-			GetHTMLTemplate( {action: "getbattle"}, $('#body'), true, function() {
+			GetHTMLTemplate( {action: "getbattle", battleid: ( queryObj()["battleid"] || $('#battleid').val() ) }, $('#body'), true, function() {
 				if( $("#battleid").length ) {
 					$("#btnAttack").on("click", function() {
 						Attack(loadBattle);				
 					});
+					
+					if( $("#gs_battle_complete").val() == "1" ) {
+						showSuccessMessageDefault( "This battle is already complete! <a href=\"Battle.html\">Click here</a> to challenge someone or resume your current battle." );
+					}
 					
 					if( timer != null ) { clearTimeout(timer) };
 					timer = setTimeout(loadBattle, 60000);

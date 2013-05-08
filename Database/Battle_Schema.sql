@@ -378,6 +378,7 @@ END$$
 delimiter $$
 
 CREATE DEFINER=`jgerma08`@`localhost` FUNCTION `Battle_GetOpponent`(
+p_battleid INT,
 p_characterid INT
 ) RETURNS int(11)
 BEGIN
@@ -394,7 +395,7 @@ CREATE TEMPORARY TABLE MatchedBattles (
 
 INSERT INTO MatchedBattles
 	SELECT Id, Challenger, Challenged FROM Battle_Active 
-	WHERE (Challenger = p_characterid or Challenged = p_characterid) AND Status <> 1;
+	WHERE (Challenger = p_characterid or Challenged = p_characterid) AND Id = p_battleid;
 
 IF (SELECT 1 FROM MatchedBattles WHERE Challenger = p_characterid) THEN
 	SET l_opponentid = (SELECT Challenged FROM MatchedBattles LIMIT 1);
