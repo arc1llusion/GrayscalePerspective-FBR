@@ -21,10 +21,21 @@ our @EXPORT = qw(getAllClasses initiateBattle doesCharacterHaveActiveBattle doEi
 my ( $Battle_Completed, $Battle_Initiated, $Battle_InProgress, $Battle_Denied ) = (1, 2, 3, 4);
 my ( $image_path );
 
+# setImagePath() - Simply sets the Url to where the battle images are stored.
+#
+# $_[0] = The url to the battle image directory
+#
+# Returns no value.
 sub setImagePath {
 	$image_path = $_[0];
 }
 
+
+# getCharacterImage() - Returns the path to the character image based on the character class.
+#
+# $_[0] - The character object to retrieve the class name from
+#
+# Returns the full path to the image.
 sub getCharacterImage {
 	my $character = $_[0];
 	
