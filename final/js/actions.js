@@ -78,11 +78,12 @@ function LogIn(showLoader, result) {
 	function(data, status) {	
 		var resulttext = "Invalid username and password.";
 		if(data == "1") {
-			resulttext = "You're logged in!";
 			document.location.href = homeUrl;		
 		}
+		else {
+			showErrorMessage( result, resulttext );
+		}
 			
-		$(result).text(resulttext);
 	});
 }
 
