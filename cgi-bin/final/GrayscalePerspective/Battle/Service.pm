@@ -485,6 +485,14 @@ sub _getCriticalHitModifier {
 	return 1;
 }
 
+# _didAttackHit()
+# 
+# Determines whether or not the skill succeeded. It's based on the skills accuracy value. 
+#
+# $_[0] = Character - The character object taking the turn against an opponent. It must be the object, not the id.
+# $_[1] = Skill - the name of the skill the character is executing.
+#
+# Returns 1 if the attack succeeded, 0 otherwise.
 sub _didAttackHit {
 	my $character = $_[0];
 	my $skill     = $_[1];
