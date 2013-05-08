@@ -312,6 +312,8 @@ sub GetQuizTemplate {
 		}
 		else {		
 			$template->param(INCOMPLETE => 0);
+			
+			_awardExp( $quizprogress{FC_TOTALPOINTS} );
 			_saveQuizHashToTemplate( $template, \%quizprogress );
 			_saveSessionParam( "deckid$deckid", undef );
 		}
@@ -547,6 +549,12 @@ sub _getAttackHash {
 	}
 	
 	return \@skills;
+}
+
+sub _awardExp {
+	my $exp = $_[0];
+	my $user = _getLoggedInUser();
+	$user->getCharacter()->awardEXP($exp);
 }
 
 sub _saveCharacterToTemplate {
