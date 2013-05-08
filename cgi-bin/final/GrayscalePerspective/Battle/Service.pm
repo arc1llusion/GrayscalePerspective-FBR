@@ -30,7 +30,6 @@ sub setImagePath {
 	$image_path = $_[0];
 }
 
-
 # getCharacterImage() - Returns the path to the character image based on the character class.
 #
 # $_[0] - The character object to retrieve the class name from
@@ -327,7 +326,7 @@ sub _endBattle {
 	my $loser    = $_[2];
 	
 	my $exp = _getRewardEXP( $winner, $loser );
-	_awardEXP($winner, $exp);
+	$winner->awardEXP($exp);
 	_saveBattleLog( $battleid, $winner->getId(), "Battle ended, and the victory goes to " . $winner->getName() . ", and they earned $exp points!", "");
 	_updateBattleStatus( $battleid, $Battle_Completed );
 }
@@ -349,38 +348,6 @@ sub _getRewardEXP {
 	}
 	
 	return $exp;
-}
-
-# _awardEXP() - 
-# 
-# Awards the given character an EXP amount. If the current exp - awarded exp remains above zero, no Level up occurs. 
-# If the current exp - awarded exp goes below zero, then the character levels up. 
-# In this case, we find the amount for the next level up and add back the negative amount from before.
-# In the case that the exp is still negative, we keep going in a loop until the characters exp remains above 0. 
-#
-# $_[0] = The character object to award the EXP to
-# $_[1] = The amount of exp to award.
-sub _awardEXP {
-	my $character = $_[0];
-	my $exp = $_[1];
-	
-	my $currentexp = $character->getEXP();
-	$currentexp = $currentexp - $exp;
-	
-	if( $currentexp <= 0 ) { #Level Up! Wooo!
-		while ( $currentexp <= 0 ) {
-			my $nextlevel = $character->getLevel() + 1;
-			my $nextexp = (($nextlevel ** 2) + 15) + $currentexp;			
-			$character->setEXP($nextexp);
-			$character->LevelUp(); #LevelUp calls save.
-			
-			$currentexp = $nextexp;
-		}
-	}
-	else {
-		$character->setEXP($currentexp);
-		$character->save();
-	}
 }
 
 # _areCharactersBattlingEachOther() - Checks to see if the given character ids are battling each other in an active battle.

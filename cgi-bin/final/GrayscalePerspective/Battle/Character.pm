@@ -220,4 +220,35 @@ sub getCriticalHitRate {
 	return ( $chr / 100 );
 }
 
+# awardEXP()
+# 
+# Awards the given character an EXP amount. If the current exp - awarded exp remains above zero, no Level up occurs. 
+# If the current exp - awarded exp goes below zero, then the character levels up. 
+# In this case, we find the amount for the next level up and add back the negative amount from before.
+# In the case that the exp is still negative, we keep going in a loop until the characters exp remains above 0. 
+#
+# $_[0] = The character object to award the EXP to
+# $_[1] = The amount of exp to award.
+sub awardEXP {
+	my ( $self, $exp ) = @_;
+	
+	my $currentexp = $self->getEXP();
+	$currentexp = $currentexp - $exp;
+	
+	if( $currentexp <= 0 ) { #Level Up! Wooo!
+		while ( $currentexp <= 0 ) {
+			my $nextlevel = $self->getLevel() + 1;
+			my $nextexp = (($nextlevel ** 2) + 15) + $currentexp;			
+			$self->setEXP($nextexp);
+			$self->LevelUp(); #LevelUp calls save.
+			
+			$currentexp = $nextexp;
+		}
+	}
+	else {
+		$self->setEXP($currentexp);
+		$self->save();
+	}
+}
+
 1;
